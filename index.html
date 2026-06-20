@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GitPulse — Visualize any GitHub profile with beautiful analytics. Contribution heatmaps, language breakdowns, coding patterns, and more.">
+  <meta name="theme-color" content="#06070a">
+  <title>GitPulse — GitHub Analytics Dashboard</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js" defer></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/heatmap.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/layout.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════
+       HEADER — Search + PAT input
+       ═══════════════════════════════════════ -->
+  <header class="header" id="header">
+    <div class="container">
+      <div class="header__content">
+        <!-- Brand -->
+        <a href="/" class="header__brand">
+          <i data-lucide="activity" class="header__logo-icon"></i>
+          <span class="header__logo-text">Git<span class="header__logo-accent">Pulse</span></span>
+        </a>
+
+        <!-- Search -->
+        <div class="header__search">
+          <div class="input-icon">
+            <i data-lucide="search"></i>
+            <input
+              type="text"
+              class="input"
+              id="username-input"
+              placeholder="Enter GitHub username..."
+              autocomplete="off"
+              spellcheck="false"
+            >
+          </div>
+          <button class="btn btn-primary" id="search-btn" aria-label="Analyze profile">
+            <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+            <span>Analyze</span>
+          </button>
+        </div>
+
+        <!-- PAT Toggle -->
+        <div class="header__actions">
+          <button class="btn btn-ghost btn-sm" id="pat-toggle" aria-label="Configure access token">
+            <i data-lucide="key" style="width:16px;height:16px;"></i>
+            <span>Token</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PAT Input (collapsible) -->
+      <div class="header__pat-panel" id="pat-panel" hidden>
+        <div class="pat-panel__inner">
+          <div class="pat-panel__info">
+            <i data-lucide="info" style="width:14px;height:14px;"></i>
+            <span>A <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Personal Access Token</a> with <code>read:user</code> scope unlocks contribution heatmaps &amp; higher rate limits.</span>
+          </div>
+          <div class="input-group">
+            <input
+              type="password"
+              class="input"
+              id="pat-input"
+              placeholder="ghp_xxxxxxxxxxxx"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button class="btn btn-secondary btn-sm" id="pat-save">Save</button>
+            <button class="btn btn-ghost btn-sm" id="pat-clear">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ═══════════════════════════════════════
+         LANDING — Shown before any search
+         ═══════════════════════════════════════ -->
+    <section class="landing" id="landing-section">
+      <!-- Animated background grid -->
+      <canvas class="landing__grid-canvas" id="grid-canvas"></canvas>
+
+      <!-- Floating orbs -->
+      <div class="landing__orb landing__orb--1"></div>
+      <div class="landing__orb landing__orb--2"></div>
+
+      <div class="container landing__container">
+        <div class="landing__split">
+          <!-- Left Content -->
+          <div class="landing__content">
+            <div class="landing__badge" id="landing-badge">
+              <span class="landing__badge-dot"></span>
+              <span>100% Client-Side Analytics</span>
+            </div>
+
+            <h1 class="landing__title">
+              Insights for any<br>
+              <span class="text-gradient">GitHub Profile</span>.
+            </h1>
+
+            <p class="landing__subtitle">
+              Instant analytics for any developer. Heatmaps, streaks, language breakdowns, and patterns — all in a stunning dashboard.
+            </p>
+
+            <div class="landing__search-box">
+              <div class="landing__search-input-wrapper">
+                <i data-lucide="search" class="search-icon"></i>
+                <input
+                  type="text"
+                  class="landing__search-input"
+                  id="landing-username-input"
+                  placeholder="Enter a GitHub username..."
+                  autocomplete="off"
+                  spellcheck="false"
+                >
+                <div class="landing__search-hint"><kbd>/</kbd></div>
+              </div>
+              <button class="landing__search-btn" id="landing-search-btn">
+                <span>Analyze</span>
+                <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
+              </button>
+            </div>
+
+            <div class="landing__examples">
+              <span class="landing__examples-label">Try:</span>
+              <button class="landing__example-btn" data-username="torvalds">
+                <img src="https://github.com/torvalds.png?size=24" alt="" class="landing__example-avatar" loading="lazy">
+                <span>torvalds</span>
+              </button>
+              <button class="landing__example-btn" data-username="sindresorhus">
+                <img src="https://github.com/sindresorhus.png?size=24" alt="" class="landing__example-avatar" loading="lazy">
+                <span>sindresorhus</span>
+              </button>
+              <button class="landing__example-btn" data-username="KanishkSigar">
+                <img src="https://github.com/KanishkSigar.png?size=24" alt="" class="landing__example-avatar" loading="lazy">
+                <span>KanishkSigar</span>
+              </button>
+            </div>
+
+            <div class="landing__features-list">
+              <div class="landing__feature-item">
+                <i data-lucide="shield-check"></i> No data stored
+              </div>
+              <div class="landing__feature-item">
+                <i data-lucide="zap"></i> Instant results
+              </div>
+              <div class="landing__feature-item">
+                <i data-lucide="lock"></i> Secure PAT usage
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Visual / Mockup -->
+          <div class="landing__visual">
+            <div class="app-mockup">
+              <div class="app-mockup__header">
+                <div class="app-mockup__dots">
+                  <span></span><span></span><span></span>
+                </div>
+                <div class="app-mockup__url">gitpulse.app/torvalds</div>
+              </div>
+              <div class="app-mockup__body">
+                <div class="mock-profile">
+                  <div class="mock-avatar"></div>
+                  <div class="mock-user-info">
+                    <div class="mock-line w-40"></div>
+                    <div class="mock-line w-20 dim"></div>
+                  </div>
+                </div>
+                <div class="mock-stats">
+                  <div class="mock-stat"></div>
+                  <div class="mock-stat"></div>
+                  <div class="mock-stat"></div>
+                  <div class="mock-stat"></div>
+                </div>
+                <div class="mock-heatmap">
+                  <div class="mock-heatmap-grid">
+                    <div class="mh-row">
+                      <div class="mh mh-0"></div><div class="mh mh-2"></div><div class="mh mh-4"></div><div class="mh mh-1"></div><div class="mh mh-3"></div><div class="mh mh-0"></div><div class="mh mh-2"></div><div class="mh mh-1"></div>
+                    </div>
+                    <div class="mh-row">
+                      <div class="mh mh-1"></div><div class="mh mh-3"></div><div class="mh mh-0"></div><div class="mh mh-4"></div><div class="mh mh-2"></div><div class="mh mh-1"></div><div class="mh mh-3"></div><div class="mh mh-4"></div>
+                    </div>
+                    <div class="mh-row">
+                      <div class="mh mh-4"></div><div class="mh mh-0"></div><div class="mh mh-1"></div><div class="mh mh-2"></div><div class="mh mh-0"></div><div class="mh mh-4"></div><div class="mh mh-1"></div><div class="mh mh-2"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         DASHBOARD — Shown after search
+         ═══════════════════════════════════════ -->
+    <div class="dashboard" id="dashboard" hidden>
+
+      <!-- ── Profile Card ── -->
+      <section class="section" id="profile-section">
+        <div class="container">
+          <div class="profile" id="profile-card">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Stats Bar ── -->
+      <section id="stats-section">
+        <div class="container">
+          <div class="stats-bar grid-4" id="stats-bar">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <div class="container"><hr class="section-divider"></div>
+
+      <!-- ── Contribution Heatmap ── -->
+      <section class="section" id="heatmap-section">
+        <div class="container">
+          <div class="section-header">
+            <h2><i data-lucide="calendar" style="width:22px;height:22px;"></i> Contributions</h2>
+          </div>
+          <div class="card" id="heatmap-card">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Streak Tracker ── -->
+      <section class="section" id="streak-section">
+        <div class="container">
+          <div class="section-header">
+            <h2><i data-lucide="flame" style="width:22px;height:22px;"></i> Streaks</h2>
+          </div>
+          <div class="grid-3" id="streak-cards">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <div class="container"><hr class="section-divider"></div>
+
+      <!-- ── Language Breakdown ── -->
+      <section class="section" id="language-section">
+        <div class="container">
+          <div class="section-header">
+            <h2><i data-lucide="code-2" style="width:22px;height:22px;"></i> Languages</h2>
+          </div>
+          <div class="card" id="language-card">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <div class="container"><hr class="section-divider"></div>
+
+      <!-- ── Coding Patterns ── -->
+      <section class="section" id="patterns-section">
+        <div class="container">
+          <div class="section-header">
+            <h2><i data-lucide="clock" style="width:22px;height:22px;"></i> Coding Patterns</h2>
+          </div>
+          <div class="grid-2" id="patterns-cards">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+      <div class="container"><hr class="section-divider"></div>
+
+      <!-- ── Repository Highlights ── -->
+      <section class="section" id="repos-section">
+        <div class="container">
+          <div class="section-header">
+            <h2><i data-lucide="folder-git-2" style="width:22px;height:22px;"></i> Repositories</h2>
+          </div>
+          <div id="repos-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ═══════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════ -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer__content">
+        <div class="footer__brand">
+          <i data-lucide="activity" style="width:16px;height:16px;"></i>
+          <span>Git<span class="header__logo-accent">Pulse</span></span>
+        </div>
+        <p class="footer__text">
+          Open source GitHub analytics. Data fetched client-side via the GitHub API. No data is stored on any server.
+        </p>
+        <div class="footer__links">
+          <a href="https://github.com/KanishkSigar/gitpulse" target="_blank" rel="noopener">
+            <i data-lucide="github" style="width:16px;height:16px;"></i>
+            Source
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Tooltip (shared, positioned by JS) -->
+  <div class="tooltip" id="global-tooltip" role="tooltip"></div>
+
+  <!-- Scripts -->
+  <script src="js/cache.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/stats.js"></script>
+  <script src="js/heatmap.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
