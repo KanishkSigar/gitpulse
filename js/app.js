@@ -4,6 +4,9 @@
 
 import { API } from './api.js';
 import { UI } from './ui.js';
+import { Heatmap } from './heatmap.js';
+import { Stats } from './stats.js';
+import { Charts } from './charts.js';
 
 // ── DOM Helpers ──
 const $ = (sel) => document.querySelector(sel);
@@ -263,14 +266,28 @@ async function showDashboard(username) {
   UI.showLoading();
 
   try {
+    // 1. Fetch user data (REST)
     const user = await API.getUser(username);
     UI.renderProfile(user);
     UI.renderStats(user);
     
-    // Future Tasks:
-    // await Heatmap.render(username);
-    // await Stats.render(username);
-    // await Charts.render(username);
+    // 2. Fetch repos (REST) for languages
+    const repos = await API.getRepos(username);
+    Charts.render(username, repos);
+
+    // 3. Fetch contributions (GraphQL) for heatmap and streaks
+    try {
+      const contributionsData = await API.getContributions(username);
+      Heatmap.render(username, contributionsData);
+      Stats.render(username, contributionsData);
+    } catch (graphqlErr) {
+      console.warn("GraphQL error, skipping heatmap/streaks:", graphqlErr);
+      const heatmapCard = document.getElementById('heatmap-card');
+      if (heatmapCard) heatmapCard.innerHTML = `<div class="error-msg">${graphqlErr.message}</div>`;
+      const streakCards = document.getElementById('streak-cards');
+      if (streakCards) streakCards.innerHTML = `<div class="error-msg" style="grid-column: 1/-1;">${graphqlErr.message}</div>`;
+    }
+
   } catch (error) {
     UI.showError(error.message);
   }
