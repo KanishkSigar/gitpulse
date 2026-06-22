@@ -7,6 +7,8 @@ import { UI } from './ui.js';
 import { Heatmap } from './heatmap.js';
 import { Stats } from './stats.js';
 import { Charts } from './charts.js';
+import { Patterns } from './patterns.js';
+import { Repos } from './repos.js';
 
 // ── DOM Helpers ──
 const $ = (sel) => document.querySelector(sel);
@@ -271,9 +273,10 @@ async function showDashboard(username) {
     UI.renderProfile(user);
     UI.renderStats(user);
     
-    // 2. Fetch repos (REST) for languages
+    // 2. Fetch repos (REST) for languages and highlights
     const repos = await API.getRepos(username);
     Charts.render(username, repos);
+    Repos.render(username, repos);
 
     // 3. Fetch contributions (GraphQL) for heatmap and streaks
     try {
@@ -286,6 +289,16 @@ async function showDashboard(username) {
       if (heatmapCard) heatmapCard.innerHTML = `<div class="error-msg">${graphqlErr.message}</div>`;
       const streakCards = document.getElementById('streak-cards');
       if (streakCards) streakCards.innerHTML = `<div class="error-msg" style="grid-column: 1/-1;">${graphqlErr.message}</div>`;
+    }
+
+    // 4. Fetch events for coding patterns
+    try {
+      const events = await API.getEvents(username);
+      Patterns.render(username, events);
+    } catch (eventsErr) {
+      console.warn("Events error, skipping patterns:", eventsErr);
+      const patternsCards = document.getElementById('patterns-cards');
+      if (patternsCards) patternsCards.innerHTML = `<div class="error-msg" style="grid-column: 1/-1;">${eventsErr.message}</div>`;
     }
 
   } catch (error) {
