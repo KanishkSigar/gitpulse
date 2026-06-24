@@ -1,5 +1,5 @@
 // ============================================
-// GitPulse — UI Helpers
+// GitPulse — UI Helpers (Editorial Redesign)
 // ============================================
 
 export const UI = {
@@ -19,16 +19,18 @@ export const UI = {
 
   showLoading() {
     this.elements.profileCard.innerHTML = `
-      <div class="profile__avatar" style="background: var(--border-primary); animation: pulse 1.5s infinite;"></div>
-      <div class="profile__info">
-        <div style="height: 32px; width: 200px; background: var(--border-primary); border-radius: 4px; animation: pulse 1.5s infinite;"></div>
-        <div style="height: 20px; width: 150px; background: var(--border-primary); border-radius: 4px; animation: pulse 1.5s infinite; margin-top: 8px;"></div>
+      <div style="display: flex; gap: 24px; align-items: center; padding: 20px;">
+        <div style="width: 88px; height: 88px; border-radius: 50%; background: var(--bg-surface); flex-shrink: 0;"></div>
+        <div style="flex: 1;">
+          <div style="height: 24px; width: 180px; background: var(--bg-surface); border-radius: 8px; margin-bottom: 12px;"></div>
+          <div style="height: 14px; width: 120px; background: var(--bg-surface); border-radius: 6px;"></div>
+        </div>
       </div>
     `;
     this.elements.statsBar.innerHTML = Array(4).fill(`
-      <div class="stat-card" style="animation: pulse 1.5s infinite;">
-        <div class="stat-card__value" style="height: 36px; width: 60px; background: var(--border-primary); border-radius: 4px; margin-bottom: 8px;"></div>
-        <div class="stat-card__label" style="height: 16px; width: 80px; background: var(--border-primary); border-radius: 4px;"></div>
+      <div class="stat-card">
+        <div style="height: 32px; width: 50px; background: var(--bg-surface); border-radius: 8px; margin-bottom: 8px;"></div>
+        <div style="height: 12px; width: 70px; background: var(--bg-surface); border-radius: 6px;"></div>
       </div>
     `).join('');
     this.showDashboard();
@@ -36,38 +38,40 @@ export const UI = {
 
   showError(message) {
     this.elements.profileCard.innerHTML = `
-      <div style="color: var(--accent-red); padding: var(--space-8); text-align: center; width: 100%;">
-        <i data-lucide="alert-circle" style="width: 48px; height: 48px; margin-bottom: var(--space-4);"></i>
-        <h3>Error</h3>
-        <p>${message}</p>
-        <button class="btn btn-primary" onclick="location.reload()" style="margin-top: var(--space-4);">Try Again</button>
+      <div style="color: var(--accent-coral); padding: var(--space-10); text-align: center; width: 100%;">
+        <i data-lucide="alert-circle" style="width: 40px; height: 40px; margin-bottom: var(--space-4);"></i>
+        <h3 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 8px;">Something went wrong</h3>
+        <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 20px;">${message}</p>
+        <button class="btn btn-primary" onclick="location.reload()">Try Again</button>
       </div>
     `;
     this.elements.statsBar.innerHTML = '';
-    // Re-initialize lucide icons for error
     if (window.lucide) window.lucide.createIcons();
   },
 
   renderProfile(user) {
     const joinedDate = new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-    const locationHtml = user.location ? `<div class="profile__meta-item"><i data-lucide="map-pin"></i> ${user.location}</div>` : '';
-    const websiteHtml = user.blog ? `<div class="profile__meta-item"><i data-lucide="link"></i> <a href="${user.blog.startsWith('http') ? user.blog : 'https://' + user.blog}" target="_blank" rel="noopener noreferrer">${user.blog.replace(/^https?:\/\//, '')}</a></div>` : '';
-    const twitterHtml = user.twitter_username ? `<div class="profile__meta-item"><i data-lucide="twitter"></i> <a href="https://twitter.com/${user.twitter_username}" target="_blank" rel="noopener noreferrer">@${user.twitter_username}</a></div>` : '';
+    
+    const metaItems = [
+      `<span style="display:inline-flex; align-items:center; gap:5px;"><i data-lucide="calendar" style="width:13px;height:13px;"></i> ${joinedDate}</span>`,
+      user.location ? `<span style="display:inline-flex; align-items:center; gap:5px;"><i data-lucide="map-pin" style="width:13px;height:13px;"></i> ${user.location}</span>` : '',
+      user.blog ? `<span style="display:inline-flex; align-items:center; gap:5px;"><i data-lucide="link" style="width:13px;height:13px;"></i> <a href="${user.blog.startsWith('http') ? user.blog : 'https://' + user.blog}" target="_blank" rel="noopener">${user.blog.replace(/^https?:\/\//, '')}</a></span>` : '',
+    ].filter(Boolean).join('<span style="color: var(--text-muted); margin: 0 8px;">·</span>');
 
     this.elements.profileCard.innerHTML = `
-      <img src="${user.avatar_url}" alt="${user.login}" class="profile__avatar">
-      <div class="profile__info">
-        <h1 class="profile__name">
-          ${user.name || user.login}
-          <a href="${user.html_url}" target="_blank" rel="noopener noreferrer" style="color: var(--text-tertiary); transition: color 0.2s;"><i data-lucide="external-link"></i></a>
-        </h1>
-        <div class="profile__username">@${user.login}</div>
-        ${user.bio ? `<p class="profile__bio">${user.bio}</p>` : ''}
-        <div class="profile__meta">
-          <div class="profile__meta-item"><i data-lucide="calendar"></i> Joined ${joinedDate}</div>
-          ${locationHtml}
-          ${websiteHtml}
-          ${twitterHtml}
+      <div style="display: flex; gap: 24px; align-items: flex-start;">
+        <img src="${user.avatar_url}" alt="${user.login}" style="width: 88px; height: 88px; border-radius: 50%; border: 2px solid var(--border-default); flex-shrink: 0;">
+        <div style="flex: 1; min-width: 0;">
+          <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px;">
+            <h1 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin: 0; line-height: 1.2;">
+              ${user.name || user.login}
+            </h1>
+            <a href="${user.html_url}" target="_blank" rel="noopener" style="color: var(--text-muted); font-size: 0.875rem; font-weight: 400;">@${user.login} ↗</a>
+          </div>
+          ${user.bio ? `<p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin: 8px 0 12px;">${user.bio}</p>` : '<div style="margin-bottom: 12px;"></div>'}
+          <div style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 0.78rem; color: var(--text-tertiary);">
+            ${metaItems}
+          </div>
         </div>
       </div>
     `;
@@ -76,7 +80,7 @@ export const UI = {
 
   renderStats(user) {
     const stats = [
-      { label: 'Public Repos', value: user.public_repos, icon: 'book-marked' },
+      { label: 'Repos', value: user.public_repos, icon: 'book-marked' },
       { label: 'Followers', value: user.followers, icon: 'users' },
       { label: 'Following', value: user.following, icon: 'user-plus' },
       { label: 'Gists', value: user.public_gists, icon: 'code' }
@@ -96,20 +100,27 @@ export const UI = {
     const valueElements = this.elements.statsBar.querySelectorAll('.stat-card__value');
     valueElements.forEach(el => {
       const target = parseInt(el.getAttribute('data-value'), 10);
-      this.animateNumber(el, target, 1500);
+      this.animateNumber(el, target, 800);
     });
   },
 
   animateNumber(element, target, duration) {
-    let start = 0;
-    const increment = target / (duration / 16); // ~60fps
-    
     if (target === 0) return;
-
-    const update = () => {
-      start += increment;
-      if (start < target) {
-        element.innerText = Math.ceil(start).toLocaleString();
+    
+    let start = 0;
+    const startTime = performance.now();
+    
+    const update = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(eased * target);
+      
+      element.innerText = current.toLocaleString();
+      
+      if (progress < 1) {
         requestAnimationFrame(update);
       } else {
         element.innerText = target.toLocaleString();
