@@ -1,122 +1,29 @@
 /* ============================================
-   GitPulse — Responsive Breakpoints
+   GitPulse — Responsive Overrides
+   (Most responsive rules are already in layout.css,
+    this file handles edge cases)
    ============================================ */
 
-/* ── Tablet (≤ 1024px) ── */
-@media (max-width: 1024px) {
-  .grid-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid-3 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ── Small Tablet / Large Phone (≤ 768px) ── */
-@media (max-width: 768px) {
-  :root {
-    --header-height: 56px;
-  }
-
-  .container {
-    padding: 0 var(--space-4);
-  }
-
-  .section {
-    padding: var(--space-10) 0;
-  }
-
-  h1 {
-    font-size: var(--text-3xl);
-  }
-
-  h2 {
-    font-size: var(--text-xl);
-  }
-
-  .grid-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .grid-3 {
-    grid-template-columns: 1fr;
-  }
-
-  .grid-2 {
-    grid-template-columns: 1fr;
-  }
-
-  /* Heatmap scrolls horizontally */
-  .heatmap-wrapper {
-    margin: 0 calc(-1 * var(--space-4));
-    padding: 0 var(--space-4);
-  }
-
-  .stat-card__value {
-    font-size: var(--text-2xl);
-  }
-
-  /* Header responsive */
-  .header__content {
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .header__search {
-    width: 100%;
-  }
-}
-
-/* ── Phone (≤ 480px) ── */
 @media (max-width: 480px) {
-  .container {
-    padding: 0 var(--space-3);
-  }
-
-  .section {
-    padding: var(--space-8) 0;
-  }
-
-  h1 {
-    font-size: var(--text-2xl);
-  }
-
-  .grid-4 {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-3);
-  }
-
   .card {
-    padding: var(--space-4);
+    padding: var(--space-5);
+    border-radius: 16px;
   }
-
+  
   .stat-card {
     padding: var(--space-4);
+    border-radius: 16px;
   }
-
+  
   .stat-card__value {
-    font-size: var(--text-xl);
+    font-size: 1.8rem;
   }
-
-  .heatmap__cell {
-    width: 11px;
-    height: 11px;
-  }
-
-  .heatmap {
-    grid-template-rows: repeat(7, 11px);
-    grid-auto-columns: 11px;
-    gap: 2px;
-  }
-
-  .filter-bar {
+  
+  .landing__examples {
     flex-direction: column;
-    align-items: stretch;
   }
-
-  .heatmap-header {
-    flex-direction: column;
-    align-items: flex-start;
+  
+  .grid-2 {
+    grid-template-columns: 1fr;
   }
 }
