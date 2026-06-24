@@ -29,7 +29,6 @@ const els = {
   landingInput: $('#landing-username-input'),
   landingSearchBtn: $('#landing-search-btn'),
   landingExamples: $$('.landing__example-btn'),
-  gridCanvas: $('#grid-canvas'),
 
   // Dashboard
   dashboard: $('#dashboard'),
@@ -42,108 +41,15 @@ const state = {
 };
 
 // ═══════════════════════════════════════
-//  ANIMATED DOT GRID BACKGROUND
-// ═══════════════════════════════════════
-function initGridCanvas() {
-  const canvas = els.gridCanvas;
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d');
-  let animId;
-  let mouseX = -1000, mouseY = -1000;
-  const DOT_SPACING = 35;
-  const DOT_RADIUS = 1;
-  const MOUSE_RADIUS = 150;
-
-  function resize() {
-    const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    canvas.style.width = rect.width + 'px';
-    canvas.style.height = rect.height + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function draw() {
-    const w = canvas.width / (window.devicePixelRatio || 1);
-    const h = canvas.height / (window.devicePixelRatio || 1);
-    ctx.clearRect(0, 0, w, h);
-
-    const cols = Math.ceil(w / DOT_SPACING) + 1;
-    const rows = Math.ceil(h / DOT_SPACING) + 1;
-    const offsetX = (w - (cols - 1) * DOT_SPACING) / 2;
-    const offsetY = (h - (rows - 1) * DOT_SPACING) / 2;
-
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const x = offsetX + c * DOT_SPACING;
-        const y = offsetY + r * DOT_SPACING;
-
-        const dx = x - mouseX;
-        const dy = y - mouseY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        let alpha = 0.12;
-        let radius = DOT_RADIUS;
-        let color = '240, 246, 252'; // white-ish
-
-        if (dist < MOUSE_RADIUS) {
-          const t = 1 - (dist / MOUSE_RADIUS);
-          alpha = 0.12 + t * 0.55;
-          radius = DOT_RADIUS + t * 1.8;
-          // Shift color toward blue when close
-          const blueT = t * 0.8;
-          color = `${Math.round(240 - blueT * 152)}, ${Math.round(246 - blueT * 80)}, 252`;
-        }
-
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${color}, ${alpha})`;
-        ctx.fill();
-      }
-    }
-
-    animId = requestAnimationFrame(draw);
-  }
-
-  function onMouseMove(e) {
-    const rect = canvas.getBoundingClientRect();
-    mouseX = e.clientX - rect.left;
-    mouseY = e.clientY - rect.top;
-  }
-
-  function onMouseLeave() {
-    mouseX = -1000;
-    mouseY = -1000;
-  }
-
-  resize();
-  draw();
-
-  window.addEventListener('resize', () => {
-    resize();
-  });
-
-  canvas.parentElement.addEventListener('mousemove', onMouseMove);
-  canvas.parentElement.addEventListener('mouseleave', onMouseLeave);
-}
-
-// ═══════════════════════════════════════
 //  INITIALIZATION
 // ═══════════════════════════════════════
 function init() {
-  // Initialize Lucide icons
-  if (window.lucide) {
-    lucide.createIcons();
-  }
+  if (window.lucide) lucide.createIcons();
 
-  // Restore PAT indicator
   if (state.token) {
     els.patToggle.classList.add('has-token');
   }
 
-  // Check URL params for username
   const params = new URLSearchParams(window.location.search);
   const urlUser = params.get('user');
   if (urlUser) {
@@ -152,7 +58,6 @@ function init() {
     showDashboard(urlUser);
   }
 
-  initGridCanvas();
   bindEvents();
 }
 
