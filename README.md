@@ -3,7 +3,7 @@
 <div align="center">
   <p><strong>A stunning, dark-themed GitHub analytics dashboard.</strong></p>
   <br>
-  <a href="https://kanishksigar.me" target="_blank"><img src="https://img.shields.io/badge/Live%20Demo-kanishksigar.me-2ea44f?style=for-the-badge&logo=github" alt="Live Demo"></a>
+  <a href="https://kanishksigar.me/gitpulse" target="_blank"><img src="https://img.shields.io/badge/Live%20Demo-kanishksigar.me%2Fgitpulse-2ea44f?style=for-the-badge&logo=github" alt="Live Demo"></a>
 </div>
 
 ## Features
