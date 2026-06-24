@@ -3,14 +3,15 @@
    Cards, Buttons, Badges, Tooltips, Skeletons
    ============================================ */
 
-/* ── Glass Card ── */
+/* ── Glass Card (Bento Style) ── */
 .card {
   background: var(--bg-card);
-  border: 1px solid var(--border-card);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--bento-border);
+  border-radius: var(--bento-radius);
   padding: var(--space-6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   transition:
     background var(--transition-base),
     border-color var(--transition-base),
@@ -50,6 +51,13 @@
   flex-direction: column;
   gap: var(--space-2);
   padding: var(--space-5) var(--space-6);
+  background: var(--bg-card);
+  border: 1px solid var(--bento-border);
+  border-radius: var(--bento-radius);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  height: 100%;
 }
 
 .stat-card__value {

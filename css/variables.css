@@ -4,24 +4,30 @@
 
 :root {
   /* ── Background Palette ── */
-  --bg-primary: #06070a;
-  --bg-secondary: #0d0f14;
-  --bg-card: rgba(15, 18, 27, 0.75);
-  --bg-card-hover: rgba(20, 24, 36, 0.85);
-  --bg-card-solid: #0f121b;
-  --bg-input: rgba(15, 18, 27, 0.6);
+  --bg-primary: #040508; /* Deeper, richer black */
+  --bg-secondary: #0a0c10;
+  --bg-card: rgba(22, 27, 34, 0.4); /* Glassmorphic */
+  --bg-card-hover: rgba(30, 36, 45, 0.6);
+  --bg-card-solid: #161b22;
+  --bg-input: rgba(22, 27, 34, 0.5);
   --bg-tooltip: rgba(10, 12, 18, 0.95);
   --bg-skeleton: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.03) 25%,
-    rgba(255, 255, 255, 0.06) 50%,
-    rgba(255, 255, 255, 0.03) 75%
+    rgba(255, 255, 255, 0.02) 25%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.02) 75%
   );
 
+  /* ── Bento specific ── */
+  --bento-border: rgba(255, 255, 255, 0.06);
+  --bento-border-hover: rgba(255, 255, 255, 0.15);
+  --bento-radius: 24px;
+  --bento-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
   /* ── Text Palette ── */
-  --text-primary: #e6edf3;
-  --text-secondary: #8b949e;
-  --text-tertiary: #565e68;
+  --text-primary: #ffffff;
+  --text-secondary: #a3b3cc;
+  --text-tertiary: #6b7a90;
   --text-accent: #79c0ff;
   --text-link: #58a6ff;
   --text-link-hover: #79c0ff;

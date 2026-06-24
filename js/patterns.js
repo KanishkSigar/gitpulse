@@ -32,13 +32,13 @@ export const Patterns = {
     });
 
     this.element.innerHTML = `
-      <div class="card pattern-card">
+      <div class="pattern-card">
         <h3>Time of Day</h3>
         <div style="position: relative; height: 200px; width: 100%; margin-top: var(--space-4);">
           <canvas id="timeChart"></canvas>
         </div>
       </div>
-      <div class="card pattern-card">
+      <div class="pattern-card">
         <h3>Day of Week</h3>
         <div style="position: relative; height: 200px; width: 100%; margin-top: var(--space-4);">
           <canvas id="dayChart"></canvas>

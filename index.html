@@ -214,95 +214,64 @@
     </section>
 
     <!-- ═══════════════════════════════════════
-         DASHBOARD — Shown after search
+         DASHBOARD — Shown after search (BENTO REDESIGN)
          ═══════════════════════════════════════ -->
-    <div class="dashboard" id="dashboard" hidden>
+    <div class="dashboard container" id="dashboard" hidden style="margin-top: var(--space-8);">
+      
+      <div class="bento-grid">
+        
+        <!-- 1. Profile Area -->
+        <div class="bento-item bento-profile card" id="profile-card">
+          <!-- Rendered by JS -->
+        </div>
 
-      <!-- ── Profile Card ── -->
-      <section class="section" id="profile-section">
-        <div class="container">
-          <div class="profile" id="profile-card">
+        <!-- 2. Stats (moved into profile or distinct? Let's leave stats-bar inside profile JS or create its container) -->
+        <!-- Wait, `ui.js` looks for `#stats-bar`. It used to be below profile. Let's add it here. -->
+        <div class="bento-item bento-stats-bar card">
+          <div class="stats-bar grid-4" id="stats-bar" style="border: none; padding: 0; background: none;">
             <!-- Rendered by JS -->
           </div>
         </div>
-      </section>
 
-      <!-- ── Stats Bar ── -->
-      <section id="stats-section">
-        <div class="container">
-          <div class="stats-bar grid-4" id="stats-bar">
-            <!-- Rendered by JS -->
+        <!-- 3. Heatmap Area -->
+        <div class="bento-item bento-heatmap card">
+          <div class="bento-header">
+            <h2 style="display:flex; align-items:center; gap:8px; margin-bottom: 16px;"><i data-lucide="calendar"></i> Contributions</h2>
           </div>
+          <div id="heatmap-card" class="bento-content"></div>
         </div>
-      </section>
 
-      <div class="container"><hr class="section-divider"></div>
-
-      <!-- ── Contribution Heatmap ── -->
-      <section class="section" id="heatmap-section">
-        <div class="container">
-          <div class="section-header">
-            <h2><i data-lucide="calendar" style="width:22px;height:22px;"></i> Contributions</h2>
-          </div>
-          <div class="card" id="heatmap-card">
-            <!-- Rendered by JS -->
-          </div>
+        <!-- 4. Streaks Area -->
+        <div class="bento-item bento-streaks" style="display: flex; flex-direction: column;">
+          <h2 style="display:flex; align-items:center; gap:8px; margin-bottom: 16px;"><i data-lucide="flame"></i> Streaks</h2>
+          <div class="grid-3" id="streak-cards" style="flex-grow: 1;"></div>
         </div>
-      </section>
 
-      <!-- ── Streak Tracker ── -->
-      <section class="section" id="streak-section">
-        <div class="container">
-          <div class="section-header">
-            <h2><i data-lucide="flame" style="width:22px;height:22px;"></i> Streaks</h2>
+        <!-- 5. Languages Area -->
+        <div class="bento-item bento-languages card">
+          <div class="bento-header">
+            <h2 style="display:flex; align-items:center; gap:8px; margin-bottom: 16px;"><i data-lucide="code-2"></i> Languages</h2>
           </div>
-          <div class="grid-3" id="streak-cards">
-            <!-- Rendered by JS -->
-          </div>
+          <div id="language-card" class="bento-content"></div>
         </div>
-      </section>
 
-      <div class="container"><hr class="section-divider"></div>
-
-      <!-- ── Language Breakdown ── -->
-      <section class="section" id="language-section">
-        <div class="container">
-          <div class="section-header">
-            <h2><i data-lucide="code-2" style="width:22px;height:22px;"></i> Languages</h2>
+        <!-- 6. Patterns Area -->
+        <div class="bento-item bento-patterns card">
+          <div class="bento-header">
+            <h2 style="display:flex; align-items:center; gap:8px; margin-bottom: 16px;"><i data-lucide="clock"></i> Coding Patterns</h2>
           </div>
-          <div class="card" id="language-card">
-            <!-- Rendered by JS -->
-          </div>
+          <div class="grid-2" id="patterns-cards" style="gap: var(--space-4);"></div>
         </div>
-      </section>
 
-      <div class="container"><hr class="section-divider"></div>
-
-      <!-- ── Coding Patterns ── -->
-      <section class="section" id="patterns-section">
-        <div class="container">
-          <div class="section-header">
-            <h2><i data-lucide="clock" style="width:22px;height:22px;"></i> Coding Patterns</h2>
+        <!-- 7. Repos Area -->
+        <div class="bento-item bento-repos card">
+          <div class="bento-header">
+            <h2 style="display:flex; align-items:center; gap:8px; margin-bottom: 16px;"><i data-lucide="folder-git-2"></i> Top Repositories</h2>
           </div>
-          <div class="grid-2" id="patterns-cards">
-            <!-- Rendered by JS -->
-          </div>
+          <div id="repos-container"></div>
         </div>
-      </section>
 
-      <div class="container"><hr class="section-divider"></div>
-
-      <!-- ── Repository Highlights ── -->
-      <section class="section" id="repos-section">
-        <div class="container">
-          <div class="section-header">
-            <h2><i data-lucide="folder-git-2" style="width:22px;height:22px;"></i> Repositories</h2>
-          </div>
-          <div id="repos-container">
-            <!-- Rendered by JS -->
-          </div>
-        </div>
-      </section>
+      </div>
 
     </div>
   </main>
