@@ -58,20 +58,33 @@ export const UI = {
       user.blog ? `<span style="display:inline-flex; align-items:center; gap:5px;"><i data-lucide="link" style="width:13px;height:13px;"></i> <a href="${user.blog.startsWith('http') ? user.blog : 'https://' + user.blog}" target="_blank" rel="noopener">${user.blog.replace(/^https?:\/\//, '')}</a></span>` : '',
     ].filter(Boolean).join('<span style="color: var(--text-muted); margin: 0 8px;">·</span>');
 
+    const chip = (icon, text) => `<span style="display:inline-flex; align-items:center; gap:5px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:999px; padding:5px 11px; font-size:0.78rem; color:var(--text-secondary);"><i data-lucide="${icon}" style="width:13px;height:13px;"></i> ${text}</span>`;
+
+    const actions = [
+      `<a class="btn btn-secondary btn-sm" href="${user.html_url}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="github" style="width:14px;height:14px;"></i> View on GitHub</a>`,
+      user.company ? chip('building-2', user.company.replace(/^@/, '')) : '',
+      user.twitter_username ? `<a class="btn btn-ghost btn-sm" href="https://twitter.com/${user.twitter_username}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="twitter" style="width:14px;height:14px;"></i> @${user.twitter_username}</a>` : '',
+    ].filter(Boolean).join('');
+
     this.elements.profileCard.innerHTML = `
-      <div style="display: flex; gap: 24px; align-items: flex-start;">
-        <img src="${user.avatar_url}" alt="${user.login}" style="width: 88px; height: 88px; border-radius: 50%; border: 2px solid var(--border-default); flex-shrink: 0;">
-        <div style="flex: 1; min-width: 0;">
-          <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px;">
-            <h1 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin: 0; line-height: 1.2;">
-              ${user.name || user.login}
-            </h1>
-            <a href="${user.html_url}" target="_blank" rel="noopener" style="color: var(--text-muted); font-size: 0.875rem; font-weight: 400;">@${user.login} ↗</a>
+      <div style="display: flex; flex-direction: column; height: 100%; gap: 18px;">
+        <div style="display: flex; gap: 24px; align-items: flex-start;">
+          <img src="${user.avatar_url}" alt="${user.login}" style="width: 88px; height: 88px; border-radius: 50%; border: 2px solid var(--border-default); flex-shrink: 0;">
+          <div style="flex: 1; min-width: 0;">
+            <div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 4px;">
+              <h1 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin: 0; line-height: 1.2;">
+                ${user.name || user.login}
+              </h1>
+              <a href="${user.html_url}" target="_blank" rel="noopener" style="color: var(--text-muted); font-size: 0.875rem; font-weight: 400;">@${user.login} ↗</a>
+            </div>
+            ${user.bio ? `<p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin: 8px 0 12px;">${user.bio}</p>` : '<div style="margin-bottom: 12px;"></div>'}
+            <div style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 0.78rem; color: var(--text-tertiary);">
+              ${metaItems}
+            </div>
           </div>
-          ${user.bio ? `<p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin: 8px 0 12px;">${user.bio}</p>` : '<div style="margin-bottom: 12px;"></div>'}
-          <div style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 0.78rem; color: var(--text-tertiary);">
-            ${metaItems}
-          </div>
+        </div>
+        <div style="margin-top: auto; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+          ${actions}
         </div>
       </div>
     `;
