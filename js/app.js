@@ -17,8 +17,6 @@ const $$ = (sel) => document.querySelectorAll(sel);
 const els = {
   // Header
   usernameInput: $('#username-input'),
-  searchToggle: $('#search-toggle'),
-  searchClose: $('#search-close'),
   headerSearch: $('#header-search'),
   patToggle: $('#pat-toggle'),
   patPanel: $('#pat-panel'),
@@ -67,22 +65,16 @@ function init() {
 //  EVENT BINDINGS
 // ═══════════════════════════════════════
 function bindEvents() {
-  // Search toggle (click icon to open search bar)
-  els.searchToggle.addEventListener('click', () => {
-    els.headerSearch.removeAttribute('hidden');
-    els.searchToggle.setAttribute('hidden', '');
-    els.usernameInput.focus();
-  });
-
-  // Search close
-  els.searchClose.addEventListener('click', () => {
-    els.headerSearch.setAttribute('hidden', '');
-    els.searchToggle.removeAttribute('hidden');
-  });
-
-  // Header search
+  // Header search (visible on the dashboard)
   els.usernameInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleSearch();
+  });
+
+  // Browser back/forward — sync the view with the URL
+  window.addEventListener('popstate', () => {
+    const u = new URLSearchParams(window.location.search).get('user');
+    if (u) { state.username = u; els.usernameInput.value = u; showDashboard(u); }
+    else { showLanding(); }
   });
 
   // Landing search
@@ -136,7 +128,7 @@ function bindEvents() {
   document.addEventListener('keydown', (e) => {
     if (e.key === '/' && !isInputFocused()) {
       e.preventDefault();
-      const input = els.landingSection.style.display === 'none'
+      const input = els.landingSection.hasAttribute('hidden')
         ? els.usernameInput
         : els.landingInput;
       input.focus();
@@ -183,7 +175,14 @@ function triggerSearch(username) {
 // ═══════════════════════════════════════
 //  DASHBOARD TOGGLE
 // ═══════════════════════════════════════
+function showLanding() {
+  els.dashboard.setAttribute('hidden', '');
+  els.landingSection.removeAttribute('hidden');
+  els.headerSearch.setAttribute('hidden', '');
+}
+
 async function showDashboard(username) {
+  els.headerSearch.removeAttribute('hidden');   // reveal header search on the dashboard
   UI.showLoading();
 
   try {

@@ -36,12 +36,7 @@
           <span class="header__logo-text">Git<span class="header__logo-accent">Pulse</span></span>
         </a>
 
-        <!-- Search Toggle Icon -->
-        <button class="btn btn-ghost" id="search-toggle" aria-label="Open search">
-          <i data-lucide="search" style="width:18px;height:18px;"></i>
-        </button>
-
-        <!-- Expandable Search Bar (hidden by default) -->
+        <!-- Header search (shown on the dashboard so you can look up another user) -->
         <div class="header__search" id="header-search" hidden>
           <div class="input-icon" style="flex:1;">
             <i data-lucide="search"></i>
@@ -49,14 +44,11 @@
               type="text"
               class="input"
               id="username-input"
-              placeholder="Enter GitHub username..."
+              placeholder="Search another username..."
               autocomplete="off"
               spellcheck="false"
             >
           </div>
-          <button class="btn btn-ghost btn-sm" id="search-close" aria-label="Close search">
-            <i data-lucide="x" style="width:16px;height:16px;"></i>
-          </button>
         </div>
 
         <!-- Settings (PAT is tucked inside) -->
