@@ -17,7 +17,6 @@ const $$ = (sel) => document.querySelectorAll(sel);
 const els = {
   // Header
   usernameInput: $('#username-input'),
-  searchBtn: $('#search-btn'),
   searchToggle: $('#search-toggle'),
   searchClose: $('#search-close'),
   headerSearch: $('#header-search'),
@@ -82,7 +81,6 @@ function bindEvents() {
   });
 
   // Header search
-  els.searchBtn.addEventListener('click', handleSearch);
   els.usernameInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleSearch();
   });
