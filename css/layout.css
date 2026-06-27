@@ -236,24 +236,23 @@
 .landing__search-btn {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 12px 24px;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   background: var(--accent);
   color: var(--bg-primary);
   border: none;
-  border-radius: 12px;
-  font-family: var(--font-body);
-  font-size: 0.875rem;
-  font-weight: 600;
+  border-radius: 50%;
   cursor: pointer;
-  transition: background var(--duration-fast) var(--ease-out);
+  transition: background var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
   flex-shrink: 0;
 }
 .landing__search-btn:hover {
   background: var(--accent-bright);
 }
 .landing__search-btn:active {
-  transform: scale(0.96);
+  transform: scale(0.92);
 }
 
 /* Example users */
