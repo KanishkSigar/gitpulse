@@ -232,3 +232,26 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* ── Graceful "locked" state (no token, no proxy) ───────────────── */
+.locked-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-4);
+  min-height: 140px;
+}
+.locked-state i {
+  width: 26px; height: 26px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  padding: 12px;
+  border-radius: 50%;
+  box-sizing: content-box;
+}
+.locked-state p { color: var(--text-primary); font-weight: 600; margin: 0; }
+.locked-state span { color: var(--text-tertiary); font-size: 0.82rem; max-width: 420px; line-height: 1.5; }
+.locked-note { color: var(--text-tertiary); font-size: 0.85rem; padding: var(--space-4); text-align: center; }

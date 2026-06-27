@@ -203,11 +203,22 @@ async function showDashboard(username) {
       Heatmap.render(username, contributionsData);
       Stats.render(username, contributionsData);
     } catch (graphqlErr) {
-      console.warn("GraphQL error, skipping heatmap/streaks:", graphqlErr);
+      console.warn("Contributions unavailable:", graphqlErr);
       const heatmapCard = document.getElementById('heatmap-card');
-      if (heatmapCard) heatmapCard.innerHTML = `<div class="error-msg">${graphqlErr.message}</div>`;
+      if (heatmapCard) {
+        heatmapCard.innerHTML = `
+          <div class="locked-state">
+            <i data-lucide="lock-keyhole"></i>
+            <p>Contribution graph needs a GitHub token.</p>
+            <span>Add one in Settings (top right) - it stays in your browser. Or run the proxy so visitors need nothing.</span>
+            <button class="btn btn-secondary btn-sm" id="unlock-pat">Add a token</button>
+          </div>`;
+      }
       const streakCards = document.getElementById('streak-cards');
-      if (streakCards) streakCards.innerHTML = `<div class="error-msg" style="grid-column: 1/-1;">${graphqlErr.message}</div>`;
+      if (streakCards) streakCards.innerHTML = `<div class="locked-note" style="grid-column: 1/-1;">Streaks unlock with a token.</div>`;
+      if (window.lucide) lucide.createIcons();
+      const unlock = document.getElementById('unlock-pat');
+      if (unlock) unlock.addEventListener('click', () => els.patToggle.click());
     }
 
     // 4. Fetch events for coding patterns
