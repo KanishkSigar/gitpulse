@@ -128,7 +128,7 @@ export const Patterns = {
           grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false }
         },
         x: {
-          ticks: { color: '#9e97a5', maxRotation: 45, minRotation: 0 },
+          ticks: { color: '#9e97a5', autoSkip: true, maxTicksLimit: 8, maxRotation: 0, minRotation: 0 },
           grid: { display: false, drawBorder: false }
         }
       }

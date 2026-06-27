@@ -58,11 +58,8 @@ export const UI = {
       user.blog ? `<span style="display:inline-flex; align-items:center; gap:5px;"><i data-lucide="link" style="width:13px;height:13px;"></i> <a href="${user.blog.startsWith('http') ? user.blog : 'https://' + user.blog}" target="_blank" rel="noopener">${user.blog.replace(/^https?:\/\//, '')}</a></span>` : '',
     ].filter(Boolean).join('<span style="color: var(--text-muted); margin: 0 8px;">·</span>');
 
-    const chip = (icon, text) => `<span style="display:inline-flex; align-items:center; gap:5px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:999px; padding:5px 11px; font-size:0.78rem; color:var(--text-secondary);"><i data-lucide="${icon}" style="width:13px;height:13px;"></i> ${text}</span>`;
-
     const actions = [
       `<a class="btn btn-secondary btn-sm" href="${user.html_url}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="github" style="width:14px;height:14px;"></i> View on GitHub</a>`,
-      user.company ? chip('building-2', user.company.replace(/^@/, '')) : '',
       user.twitter_username ? `<a class="btn btn-ghost btn-sm" href="https://twitter.com/${user.twitter_username}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="twitter" style="width:14px;height:14px;"></i> @${user.twitter_username}</a>` : '',
     ].filter(Boolean).join('');
 

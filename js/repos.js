@@ -41,10 +41,10 @@ export const Repos = {
     // We could reuse the color logic from charts, but for simplicity here we just use the name
     
     return `
-      <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" class="repo-card" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; background: rgba(255,255,255,0.02); border: 1px solid var(--bento-border); border-radius: var(--radius-md); padding: var(--space-4); transition: all 0.2s;">
-        <h3 class="repo-card__name" style="margin-top: 0; margin-bottom: var(--space-2); color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+      <div class="repo-card" style="display: flex; flex-direction: column; background: rgba(255,255,255,0.02); border: 1px solid var(--bento-border); border-radius: var(--radius-md); padding: var(--space-4); transition: all 0.2s;">
+        <h3 class="repo-card__name" style="margin-top: 0; margin-bottom: var(--space-2); display: flex; align-items: center; gap: 8px;">
           <i data-lucide="book-marked" style="color: var(--text-tertiary);"></i>
-          ${repo.name}
+          <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary); text-decoration: none;">${repo.name}</a>
         </h3>
         <p class="repo-card__desc" style="color: var(--text-secondary); font-size: 0.9em; flex-grow: 1; margin-bottom: var(--space-4);">
           ${description}
@@ -68,7 +68,7 @@ export const Repos = {
             Updated ${updatedDate}
           </div>
         </div>
-      </a>
+      </div>
     `;
   }
 };
