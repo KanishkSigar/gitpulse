@@ -18,6 +18,9 @@ const els = {
   // Header
   usernameInput: $('#username-input'),
   searchBtn: $('#search-btn'),
+  searchToggle: $('#search-toggle'),
+  searchClose: $('#search-close'),
+  headerSearch: $('#header-search'),
   patToggle: $('#pat-toggle'),
   patPanel: $('#pat-panel'),
   patInput: $('#pat-input'),
@@ -65,6 +68,19 @@ function init() {
 //  EVENT BINDINGS
 // ═══════════════════════════════════════
 function bindEvents() {
+  // Search toggle (click icon to open search bar)
+  els.searchToggle.addEventListener('click', () => {
+    els.headerSearch.removeAttribute('hidden');
+    els.searchToggle.setAttribute('hidden', '');
+    els.usernameInput.focus();
+  });
+
+  // Search close
+  els.searchClose.addEventListener('click', () => {
+    els.headerSearch.setAttribute('hidden', '');
+    els.searchToggle.removeAttribute('hidden');
+  });
+
   // Header search
   els.searchBtn.addEventListener('click', handleSearch);
   els.usernameInput.addEventListener('keydown', (e) => {
