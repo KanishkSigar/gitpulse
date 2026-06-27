@@ -4,9 +4,15 @@
 
 import { Cache } from './cache.js';
 
+// Set this to your deployed C++ proxy URL (see server/) to give EVERY visitor
+// full features (incl. contribution heatmaps) with no Personal Access Token.
+// Leave it empty to call GitHub directly (uses the optional per-user PAT).
+const PROXY_BASE = '';
+
 export const API = {
   REST_BASE: 'https://api.github.com',
   GRAPHQL_BASE: 'https://api.github.com/graphql',
+  PROXY_BASE,
 
   getHeaders() {
     const headers = {
@@ -20,15 +26,17 @@ export const API = {
   },
 
   async fetchRest(endpoint, params = {}) {
-    const url = new URL(`${this.REST_BASE}${endpoint}`);
-    Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
-
     const cacheKey = Cache.getKey(endpoint, params);
     const cached = Cache.get(cacheKey);
     if (cached) return cached;
 
-    const response = await fetch(url, { headers: this.getHeaders() });
-    
+    const qs = new URLSearchParams(params).toString();
+    const ghPath = endpoint + (qs ? `?${qs}` : '');
+
+    // Proxy mode: the server injects the token; no client headers needed.
+    const url = PROXY_BASE ? `${PROXY_BASE}/api/gh${ghPath}` : `${this.REST_BASE}${ghPath}`;
+    const response = await fetch(url, { headers: PROXY_BASE ? {} : this.getHeaders() });
+
     if (!response.ok) {
       if (response.status === 403 && response.headers.get('x-ratelimit-remaining') === '0') {
         throw new Error('API rate limit exceeded. Please add a Personal Access Token (PAT) via the top right corner.');
@@ -94,6 +102,20 @@ export const API = {
   },
 
   async getContributions(username) {
+    // Proxy mode: no PAT needed — the server holds the token.
+    if (PROXY_BASE) {
+      const cacheKey = Cache.getKey('contrib', { username });
+      const cached = Cache.get(cacheKey);
+      if (cached) return cached;
+      const r = await fetch(`${PROXY_BASE}/api/contributions/${encodeURIComponent(username)}`);
+      if (!r.ok) throw new Error('Could not load contribution data from the proxy.');
+      const j = await r.json();
+      if (j.errors) throw new Error(j.errors[0].message);
+      const data = j.data;
+      Cache.set(cacheKey, data);
+      return data;
+    }
+
     const query = `
       query($username: String!) {
         user(login: $username) {
