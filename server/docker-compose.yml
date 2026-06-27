@@ -1,0 +1,11 @@
+services:
+  gitpulse-proxy:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - PORT=8080
+      # Lock this down to your site origin in production, e.g. https://kanishksigar.me
+      - ALLOWED_ORIGIN=*
+    restart: unless-stopped
