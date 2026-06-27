@@ -130,8 +130,8 @@ export const Charts = {
       return;
     }
 
-    Chart.defaults.color = '#8b949e';
-    Chart.defaults.font.family = '"Inter", sans-serif';
+    Chart.defaults.color = '#9e97a5';
+    Chart.defaults.font.family = "'Space Grotesk', sans-serif";
 
     this.chartInstance = new Chart(ctx, {
       type: 'doughnut',
@@ -141,7 +141,7 @@ export const Charts = {
           data: data.map(d => d.bytes),
           backgroundColor: data.map(d => this.getColor(d.name)),
           borderWidth: 2,
-          borderColor: '#0d1117', // Match our dark theme background
+          borderColor: '#1a181f', // Match card background
           hoverOffset: 4
         }]
       },
@@ -151,7 +151,7 @@ export const Charts = {
         cutout: '75%',
         plugins: {
           legend: {
-            display: false // We use our custom HTML legend
+            display: false
           },
           tooltip: {
             callbacks: {
@@ -161,10 +161,10 @@ export const Charts = {
                 return ` ${label}: ${value}%`;
               }
             },
-            backgroundColor: 'rgba(22, 27, 34, 0.9)',
-            titleColor: '#c9d1d9',
-            bodyColor: '#c9d1d9',
-            borderColor: '#30363d',
+            backgroundColor: '#211f27',
+            titleColor: '#f0ece4',
+            bodyColor: '#f0ece4',
+            borderColor: 'rgba(255, 255, 255, 0.08)',
             borderWidth: 1,
             padding: 12,
             displayColors: true,

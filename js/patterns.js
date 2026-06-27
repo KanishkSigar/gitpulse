@@ -71,8 +71,8 @@ export const Patterns = {
         datasets: [{
           label: 'Commits',
           data,
-          backgroundColor: 'rgba(56, 139, 253, 0.6)',
-          borderColor: 'rgba(56, 139, 253, 1)',
+          backgroundColor: 'rgba(200, 162, 255, 0.4)',
+          borderColor: '#c8a2ff',
           borderWidth: 1,
           borderRadius: 4
         }]
@@ -95,8 +95,8 @@ export const Patterns = {
         datasets: [{
           label: 'Commits',
           data,
-          backgroundColor: 'rgba(46, 160, 67, 0.6)',
-          borderColor: 'rgba(46, 160, 67, 1)',
+          backgroundColor: 'rgba(245, 193, 108, 0.4)',
+          borderColor: '#f5c16c',
           borderWidth: 1,
           borderRadius: 4
         }]
@@ -112,10 +112,10 @@ export const Patterns = {
       plugins: {
         legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(22, 27, 34, 0.9)',
-          titleColor: '#c9d1d9',
-          bodyColor: '#c9d1d9',
-          borderColor: '#30363d',
+          backgroundColor: '#211f27',
+          titleColor: '#f0ece4',
+          bodyColor: '#f0ece4',
+          borderColor: 'rgba(255, 255, 255, 0.08)',
           borderWidth: 1,
           padding: 10,
           displayColors: false
@@ -124,11 +124,11 @@ export const Patterns = {
       scales: {
         y: {
           beginAtZero: true,
-          ticks: { stepSize: 1, color: '#8b949e' },
-          grid: { color: '#30363d', drawBorder: false }
+          ticks: { stepSize: 1, color: '#9e97a5' },
+          grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false }
         },
         x: {
-          ticks: { color: '#8b949e', maxRotation: 45, minRotation: 0 },
+          ticks: { color: '#9e97a5', maxRotation: 45, minRotation: 0 },
           grid: { display: false, drawBorder: false }
         }
       }
