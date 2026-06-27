@@ -53,9 +53,10 @@
   align-items: center;
   gap: var(--space-2);
   flex: 1;
-  max-width: 420px;
+  max-width: 480px;
+  animation: searchExpand 0.25s var(--ease-out);
 }
-.header__search .input-icon { flex: 1; }
+.header__search[hidden] { display: none !important; }
 .header__search .input {
   height: 36px;
   font-size: 0.8125rem;
@@ -64,6 +65,11 @@
 .header__search .input-icon i {
   width: 14px;
   height: 14px;
+}
+
+@keyframes searchExpand {
+  from { opacity: 0; max-width: 0; }
+  to { opacity: 1; max-width: 480px; }
 }
 
 .header__actions {
