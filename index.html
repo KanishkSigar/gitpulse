@@ -98,11 +98,20 @@
          LANDING — Shown before any search
          ═══════════════════════════════════════ -->
     <section class="landing" id="landing-section">
-
       <div class="container landing__container">
         <div class="landing__split">
           <div class="landing__content">
 
+            <!-- Brand Mark -->
+            <div class="landing__brand-mark">
+              <i data-lucide="activity" style="width: 36px; height: 36px; color: var(--accent);"></i>
+              <span>Git<span style="color: var(--accent);">Pulse</span></span>
+            </div>
+
+            <!-- Tagline -->
+            <p class="landing__tagline">GitHub profile analytics</p>
+
+            <!-- Search Box -->
             <div class="landing__search-box">
               <div class="landing__search-input-wrapper">
                 <i data-lucide="search" class="search-icon"></i>
@@ -110,20 +119,18 @@
                   type="text"
                   class="landing__search-input"
                   id="landing-username-input"
-                  placeholder="Enter a GitHub username..."
+                  placeholder="Search a GitHub username..."
                   autocomplete="off"
                   spellcheck="false"
                 >
-                <div class="landing__search-hint"><kbd>/</kbd></div>
               </div>
               <button class="landing__search-btn" id="landing-search-btn">
-                <span>Analyze</span>
                 <i data-lucide="arrow-right" style="width:18px;height:18px;"></i>
               </button>
             </div>
 
+            <!-- Example Users -->
             <div class="landing__examples">
-              <span class="landing__examples-label">Try:</span>
               <button class="landing__example-btn" data-username="torvalds">
                 <img src="https://github.com/torvalds.png?size=24" alt="" class="landing__example-avatar" loading="lazy">
                 <span>torvalds</span>
@@ -138,17 +145,6 @@
               </button>
             </div>
 
-            <div class="landing__features-list">
-              <div class="landing__feature-item">
-                <i data-lucide="shield-check"></i> No data stored
-              </div>
-              <div class="landing__feature-item">
-                <i data-lucide="zap"></i> Instant results
-              </div>
-              <div class="landing__feature-item">
-                <i data-lucide="lock"></i> Secure PAT usage
-              </div>
-            </div>
           </div>
         </div>
       </div>
