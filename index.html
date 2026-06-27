@@ -30,14 +30,19 @@
     <div class="container">
       <div class="header__content">
         <!-- Brand -->
-        <a href="/" class="header__brand">
+        <a href="." class="header__brand">
           <i data-lucide="activity" class="header__logo-icon"></i>
           <span class="header__logo-text">Git<span class="header__logo-accent">Pulse</span></span>
         </a>
 
-        <!-- Search -->
-        <div class="header__search">
-          <div class="input-icon">
+        <!-- Search Toggle Icon -->
+        <button class="btn btn-ghost" id="search-toggle" aria-label="Open search">
+          <i data-lucide="search" style="width:18px;height:18px;"></i>
+        </button>
+
+        <!-- Expandable Search Bar (hidden by default) -->
+        <div class="header__search" id="header-search" hidden>
+          <div class="input-icon" style="flex:1;">
             <i data-lucide="search"></i>
             <input
               type="text"
@@ -49,16 +54,17 @@
             >
           </div>
           <button class="btn btn-primary" id="search-btn" aria-label="Analyze profile">
-            <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
             <span>Analyze</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" id="search-close" aria-label="Close search">
+            <i data-lucide="x" style="width:16px;height:16px;"></i>
           </button>
         </div>
 
-        <!-- PAT Toggle -->
+        <!-- Settings (PAT is tucked inside) -->
         <div class="header__actions">
-          <button class="btn btn-ghost btn-sm" id="pat-toggle" aria-label="Configure access token">
-            <i data-lucide="key" style="width:16px;height:16px;"></i>
-            <span>Token</span>
+          <button class="btn btn-ghost btn-sm" id="pat-toggle" aria-label="Settings" title="GitHub Personal Access Token — needed for contribution heatmaps and higher API limits">
+            <i data-lucide="settings" style="width:16px;height:16px;"></i>
           </button>
         </div>
       </div>
@@ -68,7 +74,7 @@
         <div class="pat-panel__inner">
           <div class="pat-panel__info">
             <i data-lucide="info" style="width:14px;height:14px;"></i>
-            <span>A <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Personal Access Token</a> with <code>read:user</code> scope unlocks contribution heatmaps &amp; higher rate limits.</span>
+            <span>A <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Personal Access Token</a> with <code>read:user</code> scope unlocks contribution heatmaps &amp; higher rate limits. Your token stays in your browser only.</span>
           </div>
           <div class="input-group">
             <input
