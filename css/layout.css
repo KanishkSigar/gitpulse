@@ -496,3 +496,30 @@
     gap: var(--space-4);
   }
 }
+
+/* ═══════════════════════════════════════
+   Smooth reveal — dashboard & cards
+   ═══════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #dashboard:not([hidden]) .bento-item,
+  #dashboard:not([hidden]) .stat-card {
+    animation: fadeUp 0.42s var(--ease-out) both;
+  }
+  #dashboard:not([hidden]) .bento-profile { animation-delay: 0.02s; }
+  #dashboard:not([hidden]) .stat-card:nth-child(1) { animation-delay: 0.06s; }
+  #dashboard:not([hidden]) .stat-card:nth-child(2) { animation-delay: 0.10s; }
+  #dashboard:not([hidden]) .stat-card:nth-child(3) { animation-delay: 0.14s; }
+  #dashboard:not([hidden]) .stat-card:nth-child(4) { animation-delay: 0.18s; }
+  #dashboard:not([hidden]) .bento-heatmap   { animation-delay: 0.16s; }
+  #dashboard:not([hidden]) .bento-streaks,
+  #dashboard:not([hidden]) .bento-languages { animation-delay: 0.22s; }
+  #dashboard:not([hidden]) .bento-patterns  { animation-delay: 0.28s; }
+  #dashboard:not([hidden]) .bento-repos     { animation-delay: 0.34s; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
