@@ -53,8 +53,8 @@
 
         <!-- Settings (PAT is tucked inside) -->
         <div class="header__actions">
-          <button class="btn btn-ghost btn-sm" id="pat-toggle" aria-label="Settings" title="GitHub Personal Access Token — needed for contribution heatmaps and higher API limits">
-            <i data-lucide="settings" style="width:16px;height:16px;"></i>
+          <button class="btn btn-ghost btn-sm" id="pat-toggle" aria-label="GitHub token" title="GitHub Personal Access Token — unlocks contribution heatmaps and higher API limits">
+            <i data-lucide="key-round" style="width:16px;height:16px;"></i>
           </button>
         </div>
       </div>
@@ -62,6 +62,12 @@
       <!-- PAT Input (collapsible) -->
       <div class="header__pat-panel" id="pat-panel" hidden>
         <div class="pat-panel__inner">
+          <div class="pat-panel__head">
+            <span class="pat-panel__title"><i data-lucide="key-round" style="width:15px;height:15px;"></i> GitHub Token</span>
+            <button class="btn btn-ghost btn-sm" id="pat-close" aria-label="Close">
+              <i data-lucide="x" style="width:16px;height:16px;"></i>
+            </button>
+          </div>
           <div class="pat-panel__info">
             <i data-lucide="info" style="width:14px;height:14px;"></i>
             <span>A <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Personal Access Token</a> with <code>read:user</code> scope unlocks contribution heatmaps &amp; higher rate limits. Your token stays in your browser only.</span>

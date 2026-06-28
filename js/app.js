@@ -20,6 +20,7 @@ const els = {
   headerSearch: $('#header-search'),
   patToggle: $('#pat-toggle'),
   patPanel: $('#pat-panel'),
+  patClose: $('#pat-close'),
   patInput: $('#pat-input'),
   patSave: $('#pat-save'),
   patClear: $('#pat-clear'),
@@ -104,6 +105,9 @@ function bindEvents() {
       panel.setAttribute('hidden', '');
     }
   });
+
+  // PAT close
+  if (els.patClose) els.patClose.addEventListener('click', () => els.patPanel.setAttribute('hidden', ''));
 
   // PAT save
   els.patSave.addEventListener('click', () => {
