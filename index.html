@@ -21,6 +21,10 @@
   <link rel="stylesheet" href="css/heatmap.css">
   <link rel="stylesheet" href="css/responsive.css">
   <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/themes.css">
+
+  <!-- Apply saved theme before paint to avoid a flash -->
+  <script>try{var t=localStorage.getItem('gitpulse_theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head>
 <body>
 
@@ -53,6 +57,18 @@
 
         <!-- Settings (PAT is tucked inside) -->
         <div class="header__actions">
+          <div class="theme-menu" id="theme-menu">
+            <button class="btn btn-ghost btn-sm" id="theme-toggle" aria-label="Theme" title="Change theme">
+              <i data-lucide="palette" style="width:16px;height:16px;"></i>
+            </button>
+            <div class="theme-dropdown" id="theme-dropdown" hidden>
+              <button class="theme-opt" data-theme=""><span class="sw" style="background:#c8a2ff"></span> Lavender</button>
+              <button class="theme-opt" data-theme="indigo"><span class="sw" style="background:#5b8cff"></span> Indigo</button>
+              <button class="theme-opt" data-theme="green"><span class="sw" style="background:#34d399"></span> Green</button>
+              <button class="theme-opt" data-theme="amber"><span class="sw" style="background:#f59e0b"></span> Amber</button>
+              <button class="theme-opt" data-theme="light"><span class="sw" style="background:#f7f6f3"></span> Light</button>
+            </div>
+          </div>
           <button class="btn btn-ghost btn-sm" id="pat-toggle" aria-label="GitHub token" title="GitHub Personal Access Token — unlocks contribution heatmaps and higher API limits">
             <i data-lucide="key-round" style="width:16px;height:16px;"></i>
           </button>

@@ -33,6 +33,10 @@ const els = {
 
   // Dashboard
   dashboard: $('#dashboard'),
+
+  // Theme
+  themeToggle: $('#theme-toggle'),
+  themeDropdown: $('#theme-dropdown'),
 };
 
 // ── State ──
@@ -66,6 +70,8 @@ function init() {
 //  EVENT BINDINGS
 // ═══════════════════════════════════════
 function bindEvents() {
+  bindTheme();
+
   // Header search (visible on the dashboard)
   els.usernameInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleSearch();
@@ -137,12 +143,46 @@ function bindEvents() {
         : els.landingInput;
       input.focus();
     }
-    // Escape to close PAT panel
+    // Escape to close open panels
     if (e.key === 'Escape') {
-      if (!els.patPanel.hasAttribute('hidden')) {
-        els.patPanel.setAttribute('hidden', '');
-      }
+      if (!els.patPanel.hasAttribute('hidden')) els.patPanel.setAttribute('hidden', '');
+      if (!els.themeDropdown.hasAttribute('hidden')) els.themeDropdown.setAttribute('hidden', '');
     }
+  });
+}
+
+function bindTheme() {
+  const current = localStorage.getItem('gitpulse_theme') || '';
+  markActiveTheme(current);
+
+  els.themeToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    els.themeDropdown.toggleAttribute('hidden');
+  });
+
+  els.themeDropdown.querySelectorAll('.theme-opt').forEach((opt) => {
+    opt.addEventListener('click', () => {
+      const theme = opt.dataset.theme || '';
+      if (theme) document.documentElement.setAttribute('data-theme', theme);
+      else document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('gitpulse_theme', theme);
+      markActiveTheme(theme);
+      els.themeDropdown.setAttribute('hidden', '');
+      if (window.lucide) lucide.createIcons();
+    });
+  });
+
+  // close on outside click / Escape
+  document.addEventListener('click', (e) => {
+    if (!els.themeDropdown.hasAttribute('hidden') && !e.target.closest('#theme-menu')) {
+      els.themeDropdown.setAttribute('hidden', '');
+    }
+  });
+}
+
+function markActiveTheme(theme) {
+  els.themeDropdown.querySelectorAll('.theme-opt').forEach((opt) => {
+    opt.setAttribute('aria-current', (opt.dataset.theme || '') === theme ? 'true' : 'false');
   });
 }
 

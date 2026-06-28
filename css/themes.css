@@ -1,0 +1,143 @@
+/* ============================================
+   GitPulse — Theme presets
+   Default (no attribute) = Lavender, defined in variables.css.
+   Each preset overrides only the color tokens.
+   ============================================ */
+
+/* ── Indigo (dev-tool crisp) ── */
+:root[data-theme="indigo"] {
+  --bg-primary: #0b0f1a;
+  --bg-elevated: #131a2b;
+  --bg-surface: #1a2236;
+  --bg-surface-hover: #222c44;
+  --bg-input: #131a2b;
+  --bg-tooltip: #222c44;
+  --accent: #5b8cff;
+  --accent-bright: #84a9ff;
+  --accent-dim: rgba(91, 140, 255, 0.15);
+  --accent-secondary: #38bdf8;
+  --heatmap-0: #141a28;
+  --heatmap-1: #21345e;
+  --heatmap-2: #2f4f9a;
+  --heatmap-3: #4f7ad0;
+  --heatmap-4: #5b8cff;
+}
+
+/* ── Terminal Green ── */
+:root[data-theme="green"] {
+  --bg-primary: #0a0e0a;
+  --bg-elevated: #111811;
+  --bg-surface: #172017;
+  --bg-surface-hover: #1f2a1f;
+  --bg-input: #111811;
+  --bg-tooltip: #1f2a1f;
+  --accent: #34d399;
+  --accent-bright: #6ee7b7;
+  --accent-dim: rgba(52, 211, 153, 0.15);
+  --accent-secondary: #a3e635;
+  --heatmap-0: #141a14;
+  --heatmap-1: #1f3a2a;
+  --heatmap-2: #2f6b4c;
+  --heatmap-3: #3f9b6f;
+  --heatmap-4: #34d399;
+}
+
+/* ── Amber Dusk (warm, editorial) ── */
+:root[data-theme="amber"] {
+  --bg-primary: #14110c;
+  --bg-elevated: #1c1812;
+  --bg-surface: #241f17;
+  --bg-surface-hover: #2e2820;
+  --bg-input: #1c1812;
+  --bg-tooltip: #2e2820;
+  --accent: #f59e0b;
+  --accent-bright: #fbbf24;
+  --accent-dim: rgba(245, 158, 11, 0.15);
+  --accent-secondary: #f08080;
+  --heatmap-0: #1f1a12;
+  --heatmap-1: #5a3f1a;
+  --heatmap-2: #9a6b2c;
+  --heatmap-3: #d0934f;
+  --heatmap-4: #f59e0b;
+}
+
+/* ── Light "Paper" ── */
+:root[data-theme="light"] {
+  --bg-primary: #f7f6f3;
+  --bg-elevated: #ffffff;
+  --bg-surface: #f0eee9;
+  --bg-surface-hover: #e9e6df;
+  --bg-input: #ffffff;
+  --bg-tooltip: #1a1a1a;
+  --text-primary: #1a1a1a;
+  --text-secondary: #4b5563;
+  --text-tertiary: #6b7280;
+  --text-muted: #9ca3af;
+  --accent: #6d28d9;
+  --accent-bright: #7c3aed;
+  --accent-dim: rgba(109, 40, 217, 0.12);
+  --accent-secondary: #0891b2;
+  --accent-warm: #d97706;
+  --accent-coral: #dc2626;
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-default: rgba(0, 0, 0, 0.10);
+  --border-strong: rgba(0, 0, 0, 0.18);
+  --heatmap-0: #ebe7f5;
+  --heatmap-1: #cdbcef;
+  --heatmap-2: #a78bda;
+  --heatmap-3: #8b5cf6;
+  --heatmap-4: #6d28d9;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.14);
+}
+/* Light: fix a few hard-coded dark surfaces */
+:root[data-theme="light"] .header { background: rgba(247, 246, 243, 0.85); }
+:root[data-theme="light"] .tooltip { color: #fff; }
+
+/* ============================================
+   Theme switcher (header dropdown)
+   ============================================ */
+.theme-menu { position: relative; }
+.theme-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-modal);
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.theme-dropdown[hidden] { display: none; }
+.theme-opt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+}
+.theme-opt:hover { background: var(--bg-surface); color: var(--text-primary); }
+.theme-opt[aria-current="true"] { color: var(--text-primary); }
+.theme-opt[aria-current="true"]::after { content: "✓"; margin-left: auto; color: var(--accent); }
+.theme-opt .sw {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  flex: none;
+}
