@@ -255,3 +255,10 @@
 .locked-state p { color: var(--text-primary); font-weight: 600; margin: 0; }
 .locked-state span { color: var(--text-tertiary); font-size: 0.82rem; max-width: 420px; line-height: 1.5; }
 .locked-note { color: var(--text-tertiary); font-size: 0.85rem; padding: var(--space-4); text-align: center; }
+
+/* ── Card micro-interactions (smooth hover) ── */
+.stat-card { transition: transform var(--duration-base) var(--ease-out), border-color var(--duration-base) var(--ease-out); }
+.stat-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.repo-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+.repo-card__name a { transition: color var(--duration-fast) var(--ease-out); }
+.repo-card__name a:hover { color: var(--accent); text-decoration: underline; }
