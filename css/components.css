@@ -151,9 +151,12 @@
   display: flex;
   align-items: center;
 }
-.input-icon i {
+.input-icon i,
+.input-icon svg {
   position: absolute;
   left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--text-muted);
   pointer-events: none;
   width: 16px;
