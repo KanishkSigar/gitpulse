@@ -37,6 +37,9 @@ const els = {
   // Theme
   themeToggle: $('#theme-toggle'),
   themeDropdown: $('#theme-dropdown'),
+
+  // Export
+  exportBtn: $('#export-btn'),
 };
 
 // ── State ──
@@ -76,6 +79,9 @@ function bindEvents() {
   els.usernameInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleSearch();
   });
+
+  // Export dashboard as image
+  if (els.exportBtn) els.exportBtn.addEventListener('click', exportDashboard);
 
   // Browser back/forward — sync the view with the URL
   window.addEventListener('popstate', () => {
@@ -219,10 +225,31 @@ function triggerSearch(username) {
 // ═══════════════════════════════════════
 //  DASHBOARD TOGGLE
 // ═══════════════════════════════════════
+async function exportDashboard() {
+  if (typeof html2canvas === 'undefined') { alert('Export library still loading — try again in a moment.'); return; }
+  const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg-primary').trim() || '#111014';
+  const prev = els.exportBtn.innerHTML;
+  els.exportBtn.innerHTML = '<span class="spinner" style="width:16px;height:16px;"></span>';
+  try {
+    const canvas = await html2canvas(els.dashboard, { backgroundColor: bg, scale: 2, useCORS: true, logging: false });
+    const link = document.createElement('a');
+    link.download = `${state.username || 'gitpulse'}-gitpulse.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } catch (e) {
+    console.error(e);
+    alert('Could not export the image.');
+  } finally {
+    els.exportBtn.innerHTML = prev;
+    if (window.lucide) lucide.createIcons();
+  }
+}
+
 function showLanding() {
   els.dashboard.setAttribute('hidden', '');
   els.landingSection.removeAttribute('hidden');
   els.headerSearch.setAttribute('hidden', '');
+  if (els.exportBtn) els.exportBtn.setAttribute('hidden', '');
   // clear both search fields so the previous name doesn't linger
   if (els.usernameInput) els.usernameInput.value = '';
   if (els.landingInput) els.landingInput.value = '';
@@ -231,6 +258,7 @@ function showLanding() {
 
 async function showDashboard(username) {
   els.headerSearch.removeAttribute('hidden');   // reveal header search on the dashboard
+  if (els.exportBtn) els.exportBtn.removeAttribute('hidden');
   window.scrollTo({ top: 0, behavior: 'auto' });
   UI.showLoading();
 
