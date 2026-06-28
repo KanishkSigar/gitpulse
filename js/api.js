@@ -107,6 +107,32 @@ export const API = {
     return this.fetchRest(`/users/${username}/events/public`, { per_page: 100 });
   },
 
+  async getPinned(username) {
+    // Returns the user's pinned repositories (GraphQL), or null if unavailable
+    // (no proxy and no PAT) so callers can fall back to top-by-stars.
+    try {
+      if (PROXY_BASE) {
+        const cacheKey = Cache.getKey('pinned', { username });
+        const cached = Cache.get(cacheKey);
+        if (cached) return cached;
+        const r = await fetch(`${PROXY_BASE}/api/pinned/${encodeURIComponent(username)}`);
+        if (!r.ok) return null;
+        const j = await r.json();
+        if (j.errors) return null;
+        const nodes = j.data?.user?.pinnedItems?.nodes || null;
+        if (nodes) Cache.set(cacheKey, nodes);
+        return nodes;
+      }
+      // Direct mode needs a PAT for GraphQL; skip silently if there isn't one.
+      if (!localStorage.getItem('gitpulse_pat')) return null;
+      const query = `query($u:String!){user(login:$u){pinnedItems(first:6,types:REPOSITORY){nodes{... on Repository{name description url stargazerCount forkCount updatedAt primaryLanguage{name}}}}}}`;
+      const data = await this.fetchGraphQL(query, { u: username });
+      return data?.user?.pinnedItems?.nodes || null;
+    } catch (e) {
+      return null;
+    }
+  },
+
   async getContributions(username) {
     // Proxy mode: no PAT needed — the server holds the token.
     if (PROXY_BASE) {

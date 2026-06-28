@@ -167,6 +167,34 @@ int main() {
         if (gh->status == 200) cacheSet(key, {gh->body, "application/json", gh->status, steady_clock::now() + CACHE_TTL});
     });
 
+    // Pinned repositories (GraphQL). /api/pinned/<username>
+    svr.Get(R"(/api/pinned/([A-Za-z0-9-]+))", [](const httplib::Request& req, httplib::Response& res) {
+        if (!rateLimitOk(clientIp(req))) { sendJson(res, 429, R"({"error":"Rate limit exceeded. Try again shortly."})"); return; }
+        const std::string user = req.matches[1];
+        const std::string key = "pinned:" + user;
+
+        CacheEntry cached;
+        if (cacheGet(key, cached)) { cors(res); res.status = cached.status; res.set_content(cached.body, cached.contentType); res.set_header("X-GitPulse-Cache", "HIT"); return; }
+
+        if (GH_TOKEN.empty()) { sendJson(res, 503, R"({"error":"Pinned repos need a server token; none configured."})"); return; }
+
+        std::string body =
+            "{\"query\":\"query($u:String!){user(login:$u){pinnedItems(first:6,types:REPOSITORY){nodes{... on Repository{name description url stargazerCount forkCount updatedAt primaryLanguage{name}}}}}}\","
+            "\"variables\":{\"u\":\"" + user + "\"}}";
+
+        httplib::Client cli("https://api.github.com");
+        cli.set_connection_timeout(10);
+        cli.set_read_timeout(15);
+        auto gh = cli.Post("/graphql", githubHeaders(), body, "application/json");
+        if (!gh) { sendJson(res, 502, R"({"error":"Upstream GraphQL request failed"})"); return; }
+
+        cors(res);
+        res.status = gh->status;
+        res.set_content(gh->body, "application/json");
+        res.set_header("X-GitPulse-Cache", "MISS");
+        if (gh->status == 200) cacheSet(key, {gh->body, "application/json", gh->status, steady_clock::now() + CACHE_TTL});
+    });
+
     int port = std::stoi(env("PORT", "8080"));
     printf("[gitpulse] proxy listening on :%d (token: %s)\n", port, GH_TOKEN.empty() ? "none" : "set");
     svr.listen("0.0.0.0", port);

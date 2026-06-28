@@ -7,28 +7,37 @@ import { getLangColor } from './langColors.js';
 export const Repos = {
   element: document.getElementById('repos-container'),
 
-  async render(username, repos) {
+  async render(username, repos, opts = {}) {
     if (!this.element) return;
+
+    const heading = document.getElementById('repos-heading');
+    if (heading) heading.textContent = opts.pinned ? 'Pinned Repositories' : 'Top Repositories';
 
     if (!repos || repos.length === 0) {
       this.element.innerHTML = '<div class="error-msg">No repositories found.</div>';
       return;
     }
 
-    // Sort by stars descending, then get top 6
-    const topRepos = [...repos]
-      .filter(repo => !repo.fork) // Optionally filter out forks
-      .sort((a, b) => b.stargazers_count - a.stargazers_count)
-      .slice(0, 6);
+    let list;
+    if (opts.pinned) {
+      // Pinned repos are already curated and ordered by the user — show as-is.
+      list = repos;
+    } else {
+      // Sort by stars descending, then get top 6 (skipping forks).
+      list = [...repos]
+        .filter(repo => !repo.fork)
+        .sort((a, b) => b.stargazers_count - a.stargazers_count)
+        .slice(0, 6);
 
-    if (topRepos.length === 0) {
-      this.element.innerHTML = '<div class="error-msg">No original repositories found (only forks).</div>';
-      return;
+      if (list.length === 0) {
+        this.element.innerHTML = '<div class="error-msg">No original repositories found (only forks).</div>';
+        return;
+      }
     }
 
     this.element.innerHTML = `
       <div class="grid-2">
-        ${topRepos.map(repo => this.createRepoCard(repo)).join('')}
+        ${list.map(repo => this.createRepoCard(repo)).join('')}
       </div>
     `;
 

@@ -273,7 +273,24 @@ async function showDashboard(username) {
     // 2. Fetch repos (REST) for languages and highlights
     const repos = await API.getRepos(username);
     Charts.render(username, repos);
-    Repos.render(username, repos);
+
+    // Prefer the user's pinned repos (GraphQL); fall back to top-by-stars.
+    const pinned = await API.getPinned(username);
+    if (pinned && pinned.length) {
+      const normalized = pinned.map(n => ({
+        name: n.name,
+        description: n.description,
+        html_url: n.url,
+        language: n.primaryLanguage ? n.primaryLanguage.name : null,
+        stargazers_count: n.stargazerCount,
+        forks_count: n.forkCount,
+        updated_at: n.updatedAt,
+        fork: false,
+      }));
+      Repos.render(username, normalized, { pinned: true });
+    } else {
+      Repos.render(username, repos);
+    }
 
     // 3. Fetch contributions (GraphQL) for heatmap and streaks
     try {
