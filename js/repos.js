@@ -2,6 +2,8 @@
 // GitPulse — Repository Highlights
 // ============================================
 
+import { getLangColor } from './langColors.js';
+
 export const Repos = {
   element: document.getElementById('repos-container'),
 
@@ -52,7 +54,7 @@ export const Repos = {
         <div class="repo-card__meta" style="display: flex; gap: var(--space-4); font-size: 0.85em; color: var(--text-tertiary);">
           ${repo.language ? `
             <div style="display: flex; align-items: center; gap: 4px;">
-              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: var(--accent-blue);"></span>
+              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${getLangColor(repo.language)};"></span>
               ${language}
             </div>
           ` : ''}

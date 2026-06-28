@@ -2,36 +2,14 @@
 // GitPulse — Charts & Graphs
 // ============================================
 
+import { getLangColor } from './langColors.js';
+
 export const Charts = {
   element: document.getElementById('language-card'),
   chartInstance: null,
 
-  // Custom curated palette for languages
-  colors: {
-    JavaScript: '#f1e05a',
-    TypeScript: '#3178c6',
-    Python: '#3572A5',
-    Java: '#b07219',
-    'C++': '#f34b7d',
-    C: '#555555',
-    'C#': '#178600',
-    PHP: '#4F5D95',
-    Ruby: '#701516',
-    Go: '#00ADD8',
-    Swift: '#F05138',
-    Kotlin: '#A97BFF',
-    Rust: '#dea584',
-    Dart: '#00B4AB',
-    HTML: '#e34c26',
-    CSS: '#563d7c',
-    Vue: '#41b883',
-    Shell: '#89e051',
-    Jupyter: '#DA5B0B',
-    Other: '#3b3b4f'
-  },
-
   getColor(lang) {
-    return this.colors[lang] || this.colors.Other;
+    return getLangColor(lang);
   },
 
   async render(username, repos) {
@@ -141,7 +119,7 @@ export const Charts = {
           data: data.map(d => d.bytes),
           backgroundColor: data.map(d => this.getColor(d.name)),
           borderWidth: 2,
-          borderColor: '#1a181f', // Match card background
+          borderColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-elevated').trim() || '#1a181f',
           hoverOffset: 4
         }]
       },
