@@ -60,6 +60,7 @@ export const UI = {
 
     const actions = [
       `<a class="btn btn-secondary btn-sm" href="${user.html_url}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="github" style="width:14px;height:14px;"></i> View on GitHub</a>`,
+      user.company ? `<span style="display:inline-flex; align-items:center; gap:6px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:999px; padding:6px 12px; font-size:0.8rem; color:var(--text-secondary);"><i data-lucide="building-2" style="width:14px;height:14px;"></i> ${user.company.replace(/^@/, '')}</span>` : '',
       user.twitter_username ? `<a class="btn btn-ghost btn-sm" href="https://twitter.com/${user.twitter_username}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px;"><i data-lucide="twitter" style="width:14px;height:14px;"></i> @${user.twitter_username}</a>` : '',
     ].filter(Boolean).join('');
 
@@ -72,7 +73,7 @@ export const UI = {
               <h1 style="font-family: var(--font-display); font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin: 0; line-height: 1.2;">
                 ${user.name || user.login}
               </h1>
-              <a href="${user.html_url}" target="_blank" rel="noopener" style="color: var(--text-muted); font-size: 0.875rem; font-weight: 400;">@${user.login} ↗</a>
+              <span style="color: var(--text-muted); font-size: 0.875rem; font-weight: 400;">@${user.login}</span>
             </div>
             ${user.bio ? `<p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; margin: 8px 0 12px;">${user.bio}</p>` : '<div style="margin-bottom: 12px;"></div>'}
             <div style="display: flex; flex-wrap: wrap; gap: 4px; font-size: 0.78rem; color: var(--text-tertiary);">
