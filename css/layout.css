@@ -63,9 +63,14 @@
   font-size: 0.8125rem;
   border-radius: 10px;
 }
+.header__search .input-icon { flex: 1; }
 .header__search .input-icon i {
-  width: 14px;
-  height: 14px;
+  width: 15px;
+  height: 15px;
+  left: 16px;
+}
+.header__search .input-icon .input {
+  padding-left: 42px;
 }
 
 #search-toggle {
