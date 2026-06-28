@@ -265,3 +265,20 @@
 .repo-card:hover { transform: translateY(-2px); border-color: var(--border-strong); }
 .repo-card__name a { transition: color var(--duration-fast) var(--ease-out); }
 .repo-card__name a:hover { color: var(--accent); text-decoration: underline; }
+
+/* ── Social account chips (profile) ── */
+.social-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+}
+.social-chip:hover { color: var(--text-primary); border-color: var(--border-strong); }
+.social-chip svg { flex: none; }

@@ -195,9 +195,11 @@ async function showDashboard(username) {
   UI.showLoading();
 
   try {
-    // 1. Fetch user data (REST)
+    // 1. Fetch user data (REST) + linked social accounts
     const user = await API.getUser(username);
-    UI.renderProfile(user);
+    let socials = [];
+    try { socials = await API.getSocials(username); } catch (e) { /* best-effort */ }
+    UI.renderProfile(user, socials);
     UI.renderStats(user);
     
     // 2. Fetch repos (REST) for languages and highlights

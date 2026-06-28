@@ -91,6 +91,12 @@ export const API = {
     return this.fetchRest(`/users/${username}`);
   },
 
+  async getSocials(username) {
+    // Linked social accounts (twitter/x, linkedin, youtube, mastodon, ...). Public, best-effort.
+    try { return await this.fetchRest(`/users/${username}/social_accounts`); }
+    catch (e) { return []; }
+  },
+
   async getRepos(username) {
     // Fetch up to 100 repos, sorted by pushed
     return this.fetchRest(`/users/${username}/repos`, { per_page: 100, sort: 'pushed', direction: 'desc' });
