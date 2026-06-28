@@ -72,6 +72,9 @@
               <button class="theme-opt" data-theme="light"><span class="sw" style="background:#f7f6f3"></span> Light</button>
             </div>
           </div>
+          <button class="btn btn-ghost btn-sm" id="compare-btn" aria-label="Compare users" title="Compare two users">
+            <i data-lucide="git-compare" style="width:16px;height:16px;"></i>
+          </button>
           <button class="btn btn-ghost btn-sm" id="export-btn" aria-label="Export as image" title="Export dashboard as image" hidden>
             <i data-lucide="download" style="width:16px;height:16px;"></i>
           </button>
@@ -226,6 +229,26 @@
       </div>
 
     </div>
+
+    <!-- ═══════════════════════════════════════
+         COMPARE — Two users side by side
+         ═══════════════════════════════════════ -->
+    <section class="compare container" id="compare-section" hidden style="margin-top: var(--space-8);">
+      <h2 class="compare__title"><i data-lucide="git-compare"></i> Compare users</h2>
+      <div class="compare__form">
+        <div class="input-icon" style="flex:1; min-width:200px;">
+          <i data-lucide="user"></i>
+          <input type="text" class="input" id="compare-a" placeholder="First username..." autocomplete="off" spellcheck="false">
+        </div>
+        <span class="compare__vs">vs</span>
+        <div class="input-icon" style="flex:1; min-width:200px;">
+          <i data-lucide="user"></i>
+          <input type="text" class="input" id="compare-b" placeholder="Second username..." autocomplete="off" spellcheck="false">
+        </div>
+        <button class="btn btn-secondary" id="compare-go">Compare</button>
+      </div>
+      <div id="compare-results"></div>
+    </section>
   </main>
 
   <!-- ═══════════════════════════════════════

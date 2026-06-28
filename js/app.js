@@ -9,6 +9,7 @@ import { Stats } from './stats.js';
 import { Charts } from './charts.js';
 import { Patterns } from './patterns.js';
 import { Repos } from './repos.js';
+import { Compare } from './compare.js';
 
 // ── DOM Helpers ──
 const $ = (sel) => document.querySelector(sel);
@@ -40,6 +41,13 @@ const els = {
 
   // Export
   exportBtn: $('#export-btn'),
+
+  // Compare
+  compareBtn: $('#compare-btn'),
+  compareSection: $('#compare-section'),
+  compareA: $('#compare-a'),
+  compareB: $('#compare-b'),
+  compareGo: $('#compare-go'),
 };
 
 // ── State ──
@@ -59,8 +67,12 @@ function init() {
   }
 
   const params = new URLSearchParams(window.location.search);
+  const cmp = params.get('compare');
   const urlUser = params.get('user');
-  if (urlUser) {
+  if (cmp && cmp.includes(',')) {
+    const [a, b] = cmp.split(',').map(s => s.trim());
+    showCompare(a, b);
+  } else if (urlUser) {
     state.username = urlUser;
     els.usernameInput.value = urlUser;
     showDashboard(urlUser);
@@ -83,10 +95,20 @@ function bindEvents() {
   // Export dashboard as image
   if (els.exportBtn) els.exportBtn.addEventListener('click', exportDashboard);
 
+  // Compare users
+  if (els.compareBtn) els.compareBtn.addEventListener('click', () => showCompare());
+  if (els.compareGo) els.compareGo.addEventListener('click', handleCompare);
+  [els.compareA, els.compareB].forEach((inp) => {
+    if (inp) inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleCompare(); });
+  });
+
   // Browser back/forward — sync the view with the URL
   window.addEventListener('popstate', () => {
-    const u = new URLSearchParams(window.location.search).get('user');
-    if (u) { state.username = u; els.usernameInput.value = u; showDashboard(u); }
+    const params = new URLSearchParams(window.location.search);
+    const cmp = params.get('compare');
+    const u = params.get('user');
+    if (cmp && cmp.includes(',')) { const [a, b] = cmp.split(',').map(s => s.trim()); showCompare(a, b); }
+    else if (u) { state.username = u; els.usernameInput.value = u; showDashboard(u); }
     else { showLanding(); }
   });
 
@@ -216,6 +238,7 @@ function triggerSearch(username) {
 
   // Update URL without reload
   const url = new URL(window.location);
+  url.searchParams.delete('compare');
   url.searchParams.set('user', username);
   window.history.pushState({}, '', url);
 
@@ -245,8 +268,33 @@ async function exportDashboard() {
   }
 }
 
+function showCompare(a, b) {
+  els.landingSection.setAttribute('hidden', '');
+  els.dashboard.setAttribute('hidden', '');
+  els.headerSearch.setAttribute('hidden', '');
+  if (els.exportBtn) els.exportBtn.setAttribute('hidden', '');
+  els.compareSection.removeAttribute('hidden');
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  if (a) els.compareA.value = a;
+  if (b) els.compareB.value = b;
+  if (a && b) Compare.render(a, b);
+  else els.compareA.focus();
+}
+
+function handleCompare() {
+  const a = els.compareA.value.trim();
+  const b = els.compareB.value.trim();
+  if (!a || !b) { els.compareA.focus(); return; }
+  const url = new URL(window.location);
+  url.searchParams.delete('user');
+  url.searchParams.set('compare', `${a},${b}`);
+  window.history.pushState({}, '', url);
+  Compare.render(a, b);
+}
+
 function showLanding() {
   els.dashboard.setAttribute('hidden', '');
+  els.compareSection.setAttribute('hidden', '');
   els.landingSection.removeAttribute('hidden');
   els.headerSearch.setAttribute('hidden', '');
   if (els.exportBtn) els.exportBtn.setAttribute('hidden', '');
@@ -257,6 +305,8 @@ function showLanding() {
 }
 
 async function showDashboard(username) {
+  els.compareSection.setAttribute('hidden', '');
+  els.landingSection.setAttribute('hidden', '');
   els.headerSearch.removeAttribute('hidden');   // reveal header search on the dashboard
   if (els.exportBtn) els.exportBtn.removeAttribute('hidden');
   window.scrollTo({ top: 0, behavior: 'auto' });
