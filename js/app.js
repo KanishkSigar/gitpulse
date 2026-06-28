@@ -179,10 +179,15 @@ function showLanding() {
   els.dashboard.setAttribute('hidden', '');
   els.landingSection.removeAttribute('hidden');
   els.headerSearch.setAttribute('hidden', '');
+  // clear both search fields so the previous name doesn't linger
+  if (els.usernameInput) els.usernameInput.value = '';
+  if (els.landingInput) els.landingInput.value = '';
+  window.scrollTo({ top: 0, behavior: 'auto' });
 }
 
 async function showDashboard(username) {
   els.headerSearch.removeAttribute('hidden');   // reveal header search on the dashboard
+  window.scrollTo({ top: 0, behavior: 'auto' });
   UI.showLoading();
 
   try {
