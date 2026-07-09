@@ -95,8 +95,8 @@ function bindEvents() {
   // Export dashboard as image
   if (els.exportBtn) els.exportBtn.addEventListener('click', exportDashboard);
 
-  // Compare users
-  if (els.compareBtn) els.compareBtn.addEventListener('click', () => showCompare());
+  // Compare users (button toggles the view open/closed)
+  if (els.compareBtn) els.compareBtn.addEventListener('click', toggleCompare);
   if (els.compareGo) els.compareGo.addEventListener('click', handleCompare);
   [els.compareA, els.compareB].forEach((inp) => {
     if (inp) inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleCompare(); });
@@ -235,6 +235,7 @@ function handleLandingSearch() {
 function triggerSearch(username) {
   state.username = username;
   els.usernameInput.value = username;
+  document.title = `GitPulse | ${username}`;
 
   // Update URL without reload
   const url = new URL(window.location);
@@ -268,17 +269,43 @@ async function exportDashboard() {
   }
 }
 
+// Clicking the header compare icon opens the view, or closes it (back to
+// wherever you came from) when it's already open.
+function toggleCompare() {
+  if (!els.compareSection.hasAttribute('hidden')) {
+    const url = new URL(window.location);
+    url.searchParams.delete('compare');
+    if (state.username) {
+      url.searchParams.set('user', state.username);
+      window.history.pushState({}, '', url);
+      showDashboard(state.username);
+    } else {
+      url.searchParams.delete('user');
+      window.history.pushState({}, '', url);
+      showLanding();
+    }
+  } else {
+    showCompare();
+  }
+}
+
 function showCompare(a, b) {
   els.landingSection.setAttribute('hidden', '');
   els.dashboard.setAttribute('hidden', '');
   els.headerSearch.setAttribute('hidden', '');
   if (els.exportBtn) els.exportBtn.setAttribute('hidden', '');
   els.compareSection.removeAttribute('hidden');
+  if (els.compareBtn) { els.compareBtn.classList.add('active'); els.compareBtn.setAttribute('aria-pressed', 'true'); }
   window.scrollTo({ top: 0, behavior: 'auto' });
   if (a) els.compareA.value = a;
   if (b) els.compareB.value = b;
   if (a && b) Compare.render(a, b);
   else els.compareA.focus();
+}
+
+function clearCompareActive() {
+  els.compareSection.setAttribute('hidden', '');
+  if (els.compareBtn) { els.compareBtn.classList.remove('active'); els.compareBtn.setAttribute('aria-pressed', 'false'); }
 }
 
 function handleCompare() {
@@ -294,7 +321,7 @@ function handleCompare() {
 
 function showLanding() {
   els.dashboard.setAttribute('hidden', '');
-  els.compareSection.setAttribute('hidden', '');
+  clearCompareActive();
   els.landingSection.removeAttribute('hidden');
   els.headerSearch.setAttribute('hidden', '');
   if (els.exportBtn) els.exportBtn.setAttribute('hidden', '');
@@ -305,7 +332,7 @@ function showLanding() {
 }
 
 async function showDashboard(username) {
-  els.compareSection.setAttribute('hidden', '');
+  clearCompareActive();
   els.landingSection.setAttribute('hidden', '');
   els.headerSearch.removeAttribute('hidden');   // reveal header search on the dashboard
   if (els.exportBtn) els.exportBtn.removeAttribute('hidden');
