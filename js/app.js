@@ -48,6 +48,7 @@ const els = {
   compareA: $('#compare-a'),
   compareB: $('#compare-b'),
   compareGo: $('#compare-go'),
+  compareClose: $('#compare-close'),
 };
 
 // ── State ──
@@ -97,6 +98,7 @@ function bindEvents() {
 
   // Compare users (button toggles the view open/closed)
   if (els.compareBtn) els.compareBtn.addEventListener('click', toggleCompare);
+  if (els.compareClose) els.compareClose.addEventListener('click', closeCompare);
   if (els.compareGo) els.compareGo.addEventListener('click', handleCompare);
   [els.compareA, els.compareB].forEach((inp) => {
     if (inp) inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleCompare(); });
@@ -171,10 +173,11 @@ function bindEvents() {
         : els.landingInput;
       input.focus();
     }
-    // Escape to close open panels
+    // Escape to close open panels (innermost first)
     if (e.key === 'Escape') {
-      if (!els.patPanel.hasAttribute('hidden')) els.patPanel.setAttribute('hidden', '');
-      if (!els.themeDropdown.hasAttribute('hidden')) els.themeDropdown.setAttribute('hidden', '');
+      if (!els.patPanel.hasAttribute('hidden')) { els.patPanel.setAttribute('hidden', ''); return; }
+      if (!els.themeDropdown.hasAttribute('hidden')) { els.themeDropdown.setAttribute('hidden', ''); return; }
+      if (compareIsOpen()) closeCompare();
     }
   });
 }
@@ -269,24 +272,28 @@ async function exportDashboard() {
   }
 }
 
-// Clicking the header compare icon opens the view, or closes it (back to
-// wherever you came from) when it's already open.
-function toggleCompare() {
-  if (!els.compareSection.hasAttribute('hidden')) {
-    const url = new URL(window.location);
-    url.searchParams.delete('compare');
-    if (state.username) {
-      url.searchParams.set('user', state.username);
-      window.history.pushState({}, '', url);
-      showDashboard(state.username);
-    } else {
-      url.searchParams.delete('user');
-      window.history.pushState({}, '', url);
-      showLanding();
-    }
+const compareIsOpen = () => !els.compareSection.hasAttribute('hidden');
+
+// Close the compare view and return to wherever you came from.
+function closeCompare() {
+  if (!compareIsOpen()) return;
+  const url = new URL(window.location);
+  url.searchParams.delete('compare');
+  if (state.username) {
+    url.searchParams.set('user', state.username);
+    window.history.pushState({}, '', url);
+    showDashboard(state.username);
   } else {
-    showCompare();
+    url.searchParams.delete('user');
+    window.history.pushState({}, '', url);
+    showLanding();
   }
+}
+
+// Clicking the header compare icon opens the view, or closes it when open.
+function toggleCompare() {
+  if (compareIsOpen()) closeCompare();
+  else showCompare();
 }
 
 function showCompare(a, b) {

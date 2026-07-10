@@ -18,13 +18,13 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
 
   <!-- Styles -->
-  <link rel="stylesheet" href="css/variables.css?v=20260709">
-  <link rel="stylesheet" href="css/base.css?v=20260709">
-  <link rel="stylesheet" href="css/components.css?v=20260709">
-  <link rel="stylesheet" href="css/heatmap.css?v=20260709">
-  <link rel="stylesheet" href="css/responsive.css?v=20260709">
-  <link rel="stylesheet" href="css/layout.css?v=20260709">
-  <link rel="stylesheet" href="css/themes.css?v=20260709">
+  <link rel="stylesheet" href="css/variables.css?v=20260710">
+  <link rel="stylesheet" href="css/base.css?v=20260710">
+  <link rel="stylesheet" href="css/components.css?v=20260710">
+  <link rel="stylesheet" href="css/heatmap.css?v=20260710">
+  <link rel="stylesheet" href="css/responsive.css?v=20260710">
+  <link rel="stylesheet" href="css/layout.css?v=20260710">
+  <link rel="stylesheet" href="css/themes.css?v=20260710">
 
   <!-- Apply saved theme before paint to avoid a flash -->
   <script>try{var t=localStorage.getItem('gitpulse_theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
@@ -234,7 +234,12 @@
          COMPARE — Two users side by side
          ═══════════════════════════════════════ -->
     <section class="compare container" id="compare-section" hidden style="margin-top: var(--space-8);">
-      <h2 class="compare__title"><i data-lucide="git-compare"></i> Compare users</h2>
+      <div class="compare__head">
+        <h2 class="compare__title"><i data-lucide="git-compare"></i> Compare users</h2>
+        <button class="btn btn-ghost btn-sm" id="compare-close" aria-label="Close compare" title="Close compare">
+          <i data-lucide="x" style="width:18px;height:18px;"></i>
+        </button>
+      </div>
       <div class="compare__form">
         <div class="input-icon" style="flex:1; min-width:200px;">
           <i data-lucide="user"></i>
@@ -278,6 +283,6 @@
   <div class="tooltip" id="global-tooltip" role="tooltip"></div>
 
   <!-- Scripts -->
-  <script type="module" src="js/app.js?v=20260709"></script>
+  <script type="module" src="js/app.js?v=20260710"></script>
 </body>
 </html>
