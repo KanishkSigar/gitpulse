@@ -127,13 +127,14 @@ int main() {
     // CORS preflight for everything
     svr.Options(R"(/.*)", [](const httplib::Request&, httplib::Response& res) { cors(res); res.status = 204; });
 
-    // Generic GitHub REST passthrough: /api/gh/<github-path>?<query>
+    // Only the public user operations needed by GitPulse.
     //   e.g. /api/gh/users/torvalds  ->  https://api.github.com/users/torvalds
-    svr.Get(R"(/api/gh/.*)", [](const httplib::Request& req, httplib::Response& res) {
+    svr.Get(R"(/api/gh/users/([A-Za-z0-9-]{1,39})(/repos|/events/public|/social_accounts)?)", [](const httplib::Request& req, httplib::Response& res) {
         if (!rateLimitOk(clientIp(req))) { sendJson(res, 429, R"({"error":"Rate limit exceeded. Try again shortly."})"); return; }
-        const std::string prefix = "/api/gh";
-        std::string ghPath = req.target.substr(prefix.size());   // keeps the query string
-        if (ghPath.empty() || ghPath[0] != '/') { sendJson(res, 400, R"({"error":"Bad path"})"); return; }
+        const std::string action = req.matches[2];
+        std::string ghPath = "/users/" + req.matches[1].str() + action;
+        if (action == "/repos") ghPath += "?per_page=100&sort=pushed&direction=desc";
+        if (action == "/events/public") ghPath += "?per_page=100";
         proxyGet("gh:" + ghPath, ghPath, res);
     });
 

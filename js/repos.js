@@ -11,7 +11,7 @@ export const Repos = {
     if (!this.element) return;
 
     const heading = document.getElementById('repos-heading');
-    if (heading) heading.textContent = opts.pinned ? 'Pinned Repositories' : 'Top Repositories';
+    if (heading) heading.textContent = opts.pinned ? 'Pinned Repositories' : 'Top public repositories by stars';
 
     if (!repos || repos.length === 0) {
       this.element.innerHTML = '<div class="error-msg">No repositories found.</div>';

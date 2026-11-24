@@ -389,7 +389,7 @@ async function showDashboard(username) {
           <div class="locked-state">
             <i data-lucide="lock-keyhole"></i>
             <p>Contribution graph needs a GitHub token.</p>
-            <span>Add one in Settings (top right) - it stays in your browser. Or run the proxy so visitors need nothing.</span>
+            <span>Add one in Settings (top right) - it stays in your browser. Public profile and repository statistics are available without one.</span>
             <button class="btn btn-secondary btn-sm" id="unlock-pat">Add a token</button>
           </div>`;
       }
@@ -407,7 +407,9 @@ async function showDashboard(username) {
     } catch (eventsErr) {
       console.warn("Events error, skipping patterns:", eventsErr);
       const patternsCards = document.getElementById('patterns-cards');
-      if (patternsCards) patternsCards.innerHTML = `<div class="error-msg" style="grid-column: 1/-1;">${eventsErr.message}</div>`;
+      if (patternsCards) {
+        patternsCards.textContent = "Recent public activity is temporarily unavailable.";
+      }
     }
 
   } catch (error) {
