@@ -15,29 +15,18 @@ export const Heatmap = {
 
     const calendar = data.user.contributionsCollection.contributionCalendar;
     const total = calendar.totalContributions;
+    const days = calendar.weeks.flatMap(week => week.contributionDays);
+    const format = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeZone: 'UTC' });
+    const range = days.length ? `${format.format(new Date(days[0].date))} – ${format.format(new Date(days.at(-1).date))}` : '';
     
     let html = `
       <div class="heatmap-header">
-        <div class="heatmap-total"><strong>${total.toLocaleString()}</strong> contributions in the last year</div>
+        <div class="heatmap-total"><strong>${total.toLocaleString()}</strong> contributions</div><div class="report-note">${range}</div>
       </div>
       <div class="heatmap-container">
         <div class="heatmap-grid">
     `;
 
-    // Flatten weeks into days
-    const days = [];
-    calendar.weeks.forEach(week => {
-      week.contributionDays.forEach(day => {
-        days.push(day);
-      });
-    });
-
-    // Determine the max count to scale colors if we wanted to, 
-    // but GitHub API already provides standard colors or levels.
-    // GitHub API provides 'color' hex code, we can use it or map to our CSS variables.
-    // For our dark theme, we can map count to intensity level 0-4.
-    
-    // Instead of raw colors, let's map to our CSS variables
     const getLevel = (count) => {
       if (count === 0) return 0;
       if (count <= 3) return 1;
@@ -54,14 +43,14 @@ export const Heatmap = {
     // GitHub's grid is column-major, meaning days of week are rows.
     // CSS Grid can be column-major with `grid-auto-flow: column`.
     
-    calendar.weeks.forEach(week => {
+    calendar.weeks.forEach((week, weekIndex) => {
       // Sometimes the first week doesn't start on Sunday, so we pad it.
       // But GitHub API usually pads it for us with empty days.
       week.contributionDays.forEach(day => {
         const level = getLevel(day.contributionCount);
-        const dateStr = new Date(day.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const dateStr = new Date(day.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
         html += `
-          <div class="heatmap-cell level-${level}" 
+          <div class="heatmap-cell level-${level}" style="grid-column:${weekIndex + 1};grid-row:${new Date(day.date).getUTCDay() + 1}"
                data-date="${dateStr}" 
                data-count="${day.contributionCount}"
                onmouseenter="showTooltip(event, '${day.contributionCount} contributions on ${dateStr}')"

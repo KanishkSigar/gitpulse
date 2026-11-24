@@ -4,12 +4,12 @@
 
 import { API } from './api.js';
 import { UI } from './ui.js';
-import { Heatmap } from './heatmap.js';
+import { Heatmap } from './heatmap.js?v=2';
 import { Stats } from './stats.js';
 import { Charts } from './charts.js';
 import { Patterns } from './patterns.js';
-import { Repos } from './repos.js';
-import { Compare } from './compare.js';
+import { Repos } from './repos.js?v=2';
+import { Compare } from './compare.js?v=2';
 
 // ── DOM Helpers ──
 const $ = (sel) => document.querySelector(sel);
@@ -153,6 +153,7 @@ function bindEvents() {
       localStorage.setItem('gitpulse_pat', token);
       els.patToggle.classList.add('has-token');
       els.patPanel.setAttribute('hidden', '');
+      if (!els.dashboard.hidden) showDashboard(state.username);
     }
   });
 
@@ -162,6 +163,7 @@ function bindEvents() {
     els.patInput.value = '';
     localStorage.removeItem('gitpulse_pat');
     els.patToggle.classList.remove('has-token');
+    if (!els.dashboard.hidden) showDashboard(state.username);
   });
 
   // Keyboard shortcut: "/" to focus landing search
@@ -345,6 +347,10 @@ async function showDashboard(username) {
   if (els.exportBtn) els.exportBtn.removeAttribute('hidden');
   window.scrollTo({ top: 0, behavior: 'auto' });
   UI.showLoading();
+  for (const id of ['repos-container', 'heatmap-card', 'language-card', 'patterns-cards', 'streak-cards']) {
+    document.getElementById(id).textContent = 'Loading…';
+  }
+  document.getElementById('events-window').textContent = 'Up to 100 public events · browser time';
 
   try {
     // 1. Fetch user data (REST) + linked social accounts
@@ -388,13 +394,13 @@ async function showDashboard(username) {
         heatmapCard.innerHTML = `
           <div class="locked-state">
             <i data-lucide="lock-keyhole"></i>
-            <p>Contribution graph needs a GitHub token.</p>
-            <span>Add one in Settings (top right) - it stays in your browser. Public profile and repository statistics are available without one.</span>
+            <p>Unlock the calendar and streaks</p>
+            <span>A GitHub token is needed to request contribution history.</span>
             <button class="btn btn-secondary btn-sm" id="unlock-pat">Add a token</button>
           </div>`;
       }
       const streakCards = document.getElementById('streak-cards');
-      if (streakCards) streakCards.innerHTML = `<div class="locked-note" style="grid-column: 1/-1;">Streaks unlock with a token.</div>`;
+      if (streakCards) streakCards.textContent = '';
       if (window.lucide) lucide.createIcons();
       const unlock = document.getElementById('unlock-pat');
       if (unlock) unlock.addEventListener('click', () => els.patToggle.click());
@@ -404,6 +410,12 @@ async function showDashboard(username) {
     try {
       const events = await API.getEvents(username);
       Patterns.render(username, events);
+      if (events.length) {
+        const format = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' });
+        const dates = events.map(event => Date.parse(event.created_at));
+        document.getElementById('events-window').textContent =
+          `${format.format(Math.min(...dates))} – ${format.format(Math.max(...dates))} · ${events.length} public events · browser time`;
+      }
     } catch (eventsErr) {
       console.warn("Events error, skipping patterns:", eventsErr);
       const patternsCards = document.getElementById('patterns-cards');

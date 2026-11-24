@@ -26,6 +26,8 @@
   <link rel="stylesheet" href="css/layout.css?v=20260710">
   <link rel="stylesheet" href="css/themes.css?v=20260710">
 
+  <link rel="stylesheet" href="css/report.css">
+
   <!-- Apply saved theme before paint to avoid a flash -->
   <script>try{var t=localStorage.getItem('gitpulse_theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
 </head>
@@ -176,59 +178,39 @@
          ═══════════════════════════════════════ -->
     <div class="dashboard container" id="dashboard" hidden style="margin-top: var(--space-8);">
       
-      <div class="bento-grid">
-        
-        <!-- 1. Profile Area -->
-        <div class="bento-item bento-profile card" id="profile-card">
-          <!-- Rendered by JS -->
+      <div class="profile-report">
+        <header class="report-summary card">
+          <div id="profile-card"></div>
+          <div id="stats-bar" class="report-stats" aria-label="Public GitHub profile statistics"></div>
+        </header>
+
+        <div class="report-overview">
+          <section class="report-panel card" aria-labelledby="contributions-title">
+            <h2 id="contributions-title">Contribution calendar</h2>
+            <div id="heatmap-card"></div>
+            <div id="streak-cards" class="report-streaks" aria-label="Contribution streaks"></div>
+          </section>
+
+          <section class="report-panel report-repos card" aria-labelledby="repos-heading">
+            <h2 id="repos-heading">Repository highlights</h2>
+            <div id="repos-container"></div>
+          </section>
         </div>
 
-        <!-- 2. Stats -->
-        <div id="stats-bar" style="display: contents;">
-          <!-- Rendered by JS -->
-        </div>
+        <div class="report-details">
+          <section class="report-panel card">
+            <h2>Languages</h2>
+            <p class="report-note">Estimated by repository size across up to 100 recently pushed public repositories.</p>
+            <div id="language-card"></div>
+          </section>
 
-        <!-- 3. Heatmap Area -->
-        <div class="bento-item bento-heatmap card">
-          <div class="bento-header">
-            <h2 style="display:flex; align-items:center; gap:8px; margin-bottom: 16px;"><i data-lucide="calendar"></i> Contributions</h2>
-          </div>
-          <div id="heatmap-card" class="bento-content"></div>
+          <section class="report-panel card">
+            <h2>Public push patterns</h2>
+            <p class="report-note" id="events-window">Up to 100 public events · browser time</p>
+            <div class="grid-2" id="patterns-cards"></div>
+          </section>
         </div>
-
-        <!-- 4. Streaks Area -->
-        <div class="bento-item bento-streaks" style="display: flex; flex-direction: column;">
-          <h2 style="display:flex; align-items:center; gap:8px; margin-bottom: 16px;"><i data-lucide="flame"></i> Streaks</h2>
-          <div class="grid-3" id="streak-cards" style="flex-grow: 1;"></div>
-        </div>
-
-        <!-- 5. Languages Area -->
-        <div class="bento-item bento-languages card">
-          <div class="bento-header">
-            <h2 style="display:flex; align-items:center; gap:8px; margin-bottom: 16px;"><i data-lucide="code-2"></i> Languages</h2>
-          </div>
-          <div id="language-card" class="bento-content"></div>
-        </div>
-
-        <!-- 6. Patterns Area -->
-        <div class="bento-item bento-patterns card">
-          <div class="bento-header">
-            <h2 style="display:flex; align-items:center; gap:8px; margin-bottom: 16px;"><i data-lucide="clock"></i> Coding Patterns</h2>
-            <p>Based on pushes in the latest 100 public GitHub events. Times are shown in your browser’s time zone.</p>
-          </div>
-          <div class="grid-2" id="patterns-cards" style="gap: var(--space-4);"></div>
-        </div>
-
-        <!-- 7. Repos Area -->
-        <div class="bento-item bento-repos card">
-          <div class="bento-header">
-            <h2 style="display:flex; align-items:center; gap:8px; margin-bottom: 16px;"><i data-lucide="folder-git-2"></i> <span id="repos-heading">Top Repositories</span></h2>
-          </div>
-          <div id="repos-container"></div>
-        </div>
-
       </div>
-
     </div>
 
     <!-- ═══════════════════════════════════════
@@ -242,12 +224,12 @@
         </button>
       </div>
       <div class="compare__form">
-        <div class="input-icon" style="flex:1; min-width:200px;">
+        <div class="input-icon">
           <i data-lucide="user"></i>
           <input type="text" class="input" id="compare-a" placeholder="First username..." autocomplete="off" spellcheck="false">
         </div>
         <span class="compare__vs">vs</span>
-        <div class="input-icon" style="flex:1; min-width:200px;">
+        <div class="input-icon">
           <i data-lucide="user"></i>
           <input type="text" class="input" id="compare-b" placeholder="Second username..." autocomplete="off" spellcheck="false">
         </div>
@@ -284,6 +266,6 @@
   <div class="tooltip" id="global-tooltip" role="tooltip"></div>
 
   <!-- Scripts -->
-  <script type="module" src="js/app.js?v=20260710"></script>
+  <script type="module" src="js/app.js?v=2"></script>
 </body>
 </html>

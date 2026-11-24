@@ -4,6 +4,12 @@
 
 import { getLangColor } from './langColors.js';
 
+function escapeText(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[char]);
+}
+
 export const Repos = {
   element: document.getElementById('repos-container'),
 
@@ -36,50 +42,31 @@ export const Repos = {
     }
 
     this.element.innerHTML = `
-      <div class="grid-2">
-        ${list.map(repo => this.createRepoCard(repo)).join('')}
+      <div class="report-repo-list">
+        ${list.slice(0, 3).map(repo => this.createRepoCard(repo)).join('')}
       </div>
+      ${list.length > 3 ? `<details class="more-repos"><summary>Show ${list.length - 3} more repositories</summary>
+        <div class="report-repo-list">${list.slice(3).map(repo => this.createRepoCard(repo)).join('')}</div>
+      </details>` : ''}
     `;
 
     if (window.lucide) window.lucide.createIcons();
   },
 
   createRepoCard(repo) {
-    const language = repo.language || 'Unknown';
-    const updatedDate = new Date(repo.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    const description = repo.description || 'No description provided.';
-    
-    // We could reuse the color logic from charts, but for simplicity here we just use the name
-    
+    const description = escapeText(repo.description);
+    const language = escapeText(repo.language);
+    const link = new URL(repo.html_url);
+    const href = link.origin === 'https://github.com' ? escapeText(link.href) : '#';
     return `
-      <div class="repo-card" style="display: flex; flex-direction: column; background: rgba(255,255,255,0.02); border: 1px solid var(--bento-border); border-radius: var(--radius-md); padding: var(--space-4); transition: all 0.2s;">
-        <h3 class="repo-card__name" style="margin-top: 0; margin-bottom: var(--space-2); display: flex; align-items: center; gap: 8px;">
-          <i data-lucide="book-marked" style="color: var(--text-tertiary);"></i>
-          <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer" style="color: var(--text-primary); text-decoration: none;">${repo.name}</a>
-        </h3>
-        <p class="repo-card__desc" style="color: var(--text-secondary); font-size: 0.9em; flex-grow: 1; margin-bottom: var(--space-4);">
-          ${description}
-        </p>
-        <div class="repo-card__meta" style="display: flex; gap: var(--space-4); font-size: 0.85em; color: var(--text-tertiary);">
-          ${repo.language ? `
-            <div style="display: flex; align-items: center; gap: 4px;">
-              <span style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${getLangColor(repo.language)};"></span>
-              ${language}
-            </div>
-          ` : ''}
-          <div style="display: flex; align-items: center; gap: 4px;">
-            <i data-lucide="star" style="width: 14px; height: 14px;"></i>
-            ${repo.stargazers_count}
-          </div>
-          <div style="display: flex; align-items: center; gap: 4px;">
-            <i data-lucide="git-fork" style="width: 14px; height: 14px;"></i>
-            ${repo.forks_count}
-          </div>
-          <div style="display: flex; align-items: center; gap: 4px; margin-left: auto;">
-            Updated ${updatedDate}
-          </div>
+      <article class="report-repo">
+        <h3><a href="${href}" target="_blank" rel="noopener noreferrer">${escapeText(repo.name)}</a></h3>
+        ${description ? `<p>${description}</p>` : ''}
+        <div class="report-repo-meta">
+          ${language ? `<span><span class="cdot" style="background:${getLangColor(repo.language)}"></span>${language}</span>` : ''}
+          <span>★ ${Number(repo.stargazers_count || 0).toLocaleString()}</span>
+          <span>⑂ ${Number(repo.forks_count || 0).toLocaleString()} forks</span>
         </div>
-      </div>
-    `;
-  }
+      </article>`;
+  },
 };

@@ -30,6 +30,50 @@ function metrics(user, repos) {
 
 const num = (n) => (n ?? 0).toLocaleString();
 
+const dayMs = 86_400_000;
+
+function activity(eventsA, eventsB, loginA, loginB) {
+  if (!eventsA || !eventsB) {
+    return '<section class="compare-activity"><h3>Public push activity</h3><p class="report-note">GitHub activity was unavailable for one or both profiles.</p></section>';
+  }
+  const end = Math.floor(Date.now() / dayMs);
+  // Drop the oldest day of a full sample because its event count can be incomplete.
+  const firstCompleteDay = events => events.length >= 100
+    ? Math.floor(Math.min(...events.map(event => Date.parse(event.created_at))) / dayMs) + 1
+    : end - 27;
+  const start = Math.max(end - 27, firstCompleteDay(eventsA), firstCompleteDay(eventsB));
+  if (start > end) {
+    return '<section class="compare-activity"><h3>Public push activity</h3><p class="report-note">The latest event samples do not cover a shared full day.</p></section>';
+  }
+  const countPushes = events => {
+    const counts = new Map();
+    for (const event of events) {
+      if (event.type !== 'PushEvent') continue;
+      const day = Math.floor(Date.parse(event.created_at) / dayMs);
+      counts.set(day, (counts.get(day) || 0) + 1);
+    }
+    return counts;
+  };
+  const a = countPushes(eventsA);
+  const b = countPushes(eventsB);
+  const pairs = Array.from({ length: end - start + 1 }, (_, i) => [a.get(start + i) || 0, b.get(start + i) || 0]);
+  const scale = Math.max(1, ...pairs.flat());
+  const format = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  const total = column => pairs.reduce((sum, pair) => sum + pair[column], 0);
+  const bars = pairs.map(([left, right], i) => {
+    const day = format.format((start + i) * dayMs);
+    return `<span class="compare-day" title="${day} · ${left} / ${right} pushes">
+      <i style="height:${left / scale * 100}%"></i><i style="height:${right / scale * 100}%"></i>
+    </span>`;
+  }).join('');
+  return `<section class="compare-activity">
+    <h3>Public push activity</h3>
+    <p class="report-note">${format.format(start * dayMs)} – ${format.format(end * dayMs)} UTC · Shared scale 0–${scale} pushes/day · Up to 100 recent public events per profile</p>
+    <div role="img" aria-label="Daily push events. ${loginA}: ${total(0)} pushes. ${loginB}: ${total(1)} pushes." style="--days:${pairs.length}">${bars}</div>
+    <div class="compare-legend"><span>@${loginA} · ${total(0)}</span><span>@${loginB} · ${total(1)}</span></div>
+  </section>`;
+}
+
 export const Compare = {
   async render(aName, bName) {
     const el = document.getElementById('compare-results');
@@ -37,9 +81,11 @@ export const Compare = {
     el.innerHTML = '<div class="loading-state"><span class="spinner"></span> Comparing…</div>';
 
     try {
-      const [ua, ra, ub, rb] = await Promise.all([
+      const events = name => API.getEvents(name).catch(() => null);
+      const [ua, ra, ub, rb, ea, eb] = await Promise.all([
         API.getUser(aName), API.getRepos(aName),
         API.getUser(bName), API.getRepos(bName),
+        events(aName), events(bName),
       ]);
       const ma = metrics(ua, ra);
       const mb = metrics(ub, rb);
@@ -48,10 +94,10 @@ export const Compare = {
         { label: 'Followers', a: ma.followers, b: mb.followers, cmp: true },
         { label: 'Following', a: ma.following, b: mb.following, cmp: true },
         { label: 'Public Repos', a: ma.repos, b: mb.repos, cmp: true },
-        { label: 'Total Stars', a: ma.stars, b: mb.stars, cmp: true },
-        { label: 'Total Forks', a: ma.forks, b: mb.forks, cmp: true },
+        { label: 'Stars in sample', a: ma.stars, b: mb.stars, cmp: true },
+        { label: 'Forks in sample', a: ma.forks, b: mb.forks, cmp: true },
         { label: 'Account Age', a: ma.ageYears ? `${ma.ageYears}y` : '—', b: mb.ageYears ? `${mb.ageYears}y` : '—', cmp: false },
-        { label: 'Top Language', a: ma.topLang, b: mb.topLang, cmp: false, lang: true },
+        { label: 'Top sampled language', a: ma.topLang, b: mb.topLang, cmp: false, lang: true },
       ];
 
       const head = (u) => `
@@ -79,10 +125,12 @@ export const Compare = {
       }).join('<div class="cspacer"></div>');
 
       el.innerHTML = `
-        <div class="compare-grid card" style="padding: var(--space-6);">
+        <div class="compare-grid card">
           ${head(ua)}<div class="cvs">VS</div>${head(ub)}
           <div class="cspacer"></div>
+          ${activity(ea, eb, ua.login, ub.login)}
           ${rowHtml}
+          <p class="compare-activity report-note">Repository metrics use up to 100 public repositories per profile, ordered by last push.</p>
         </div>`;
 
       if (window.lucide) window.lucide.createIcons();
